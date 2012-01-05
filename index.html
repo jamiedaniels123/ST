@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>  
+  <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">  
+	<link rel="stylesheet"  href="http://code.jquery.com/mobile/1.0rc1/jquery.mobile-1.0rc1.min.css" />
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />	 
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+    <script type="text/javascript" src="/javascript/sportstables.js"></script>	
+	<script type="text/javascript" src="http://code.jquery.com/mobile/1.0rc1/jquery.mobile-1.0rc1.min.js"></script>	
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-24702575-1']);
+    _gaq.push(['_trackPageview']);
+    
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+    <title>Make sports tables with SportsTables! the league table generator</title>    
+  </head>
+  <body>
+  <div data-role="page" id="index">
+
+    <div data-role="header">
+    
+		<a href="./" data-icon="home" data-iconpos="notext">Home</a>
+	    <h1>SportsTables!</h1>
+	    <a href="{{ url }}"  rel="external" data-icon="arrow-r">{{ url_linktext }}</a>	
+	    
+    </div><!-- /header -->
+
+	<div data-role="content">
+    <div class="ui-bar ui-bar-d">
+      <p>SportsTables is a league table generator.</p>
+    <div class="desktop-only">  
+      <p>It lets you create league tables for tournaments or make league tables for games by simply:</p>
+      <ul>
+         <li>entering a name for your league table;</li>
+         <li>setting how many points you get for a win or draw in that league;</li>               
+         <li>adding teams or individuals to the league;</li>
+         <li>recording the results of matches between those teams or individuals;</li>
+         <li>sharing the tables you've created with anyone you want!</li>         
+      </ul> 
+      <p>You might be at a sports tournament? Or at home gaming with friends?  And you need
+      to make a league table. Whether it's Soccer, Rugby, Hockey, Basketball, Football, Futsal,
+      real or virtual, maybe even FIFA on you're Xbox, PlayStation or Nintendo, whatever really,
+      chances are you could use SportsTables to compile the results of the competition and
+      create a league table for you.</p>
+    </div>
+    </div>    
+	<ul data-role="listview" data-inset="true" data-theme="a">
+	  <li><a href="./existingtable">Your tables</a></li>
+	</ul>
+	<ul data-role="listview" data-inset="true" data-theme="a">
+	  <li><a href="./newtable">Create a new table</a></li>
+	</ul>	   
+     <div data-role="collapsible" data-inset="true" data-theme="c">
+       <h3>Why Sign in?</h3>
+     <p>Signing in saves your tables permanently and allows you to access them from different devices.</p>
+     <p>You don't need to sign in to use SportsTables as a temporary account is automatically started for you, 
+     but it expires after a long period of inactivity (years) and only applies to the device it is initially created on.</p>
+     <p>If your temporary account expires, or you move move to another device, tables associated with that account will be lost. It doesn't stop  
+     you starting again, making new tables, as a new temporary account immediately begins. If your not signed in a temporary account is always present
+     and ready for you to use.</p>
+     <p>You can move temporary tables to your permanent account by signing in. Once moved they will no longer appear in the temporary account, 
+     you will need to sign in to see them.</p>    
+     <p>To keep things simple we've delegated account creation to
+     <span class="ga_signin"><b class="g_b">G</b><b class="g_r">o</b><b class="g_y">o</b><b class="g_b">g</b><b class="g_g">l</b><b class="g_r">e</b></span>, 
+     so you'll need a Google Account to sign in with.</p>
+     </div>
+	</div><!-- /content -->
+	<div data-role="footer" class="footer-docs">
+			<p align="right">&copy; 2011 SportsTables &nbsp; <img align="top" src="./images/appengine.gif" alt="Powered by Google App Engine" border="0"/> &nbsp; </p>
+	</div><!-- /footer -->
+</div><!-- /page -->  
+  </body>
+</html>

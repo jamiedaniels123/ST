@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html class="ui-mobile">  
+  <head>
+	<link rel="stylesheet"  href="http://code.jquery.com/mobile/1.0rc1/jquery.mobile-1.0rc1.min.css" />
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />   
+	<meta name="viewport" content="width=device-width, initial-scale=1">	 
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+    <script type="text/javascript" src="/javascript/sportstables.js"></script>	
+	<script type="text/javascript" src="http://code.jquery.com/mobile/1.0rc1/jquery.mobile-1.0rc1.min.js"></script>	
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-24702575-1']);
+    _gaq.push(['_trackPageview']);
+    
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+    <title>Make sports tables with SportsTables! the league table generator</title>        
+  </head>
+<body class="ui-mobile-viewport">
+<div class="type-home ui-page ui-body-c" data-role="page" id="displaymessage" tabindex="0" data-url="{{return_page}}" style="min-height: 517px;">
+<div class="ui-page ui-body-a ui-dialog ui-page-active" data-role="dialog" tabindex="0" role="dialog" style="min-height: 517px;">
+<div class="ui-corner-top ui-overlay-shadow ui-header ui-bar-d" data-theme="d" data-role="header" role="banner">
+<h1 class="ui-title" tabindex="0" role="heading" aria-level="1">SportsTables notification message:</h1>
+</div>
+<div class="ui-corner-bottom ui-overlay-shadow ui-content ui-body-c" data-theme="c" data-role="content" role="main">
+<h2 class="notification-message">
+'A {{table_object}} has been {{object_action}}'
+</h2>
+<a class="ui-btn ui-btn-corner-all ui-shadow ui-btn-up-b" data-theme="b" data-transition="fade" data-role="button" href="/{{object_url}}?table_name={{table_id}}&result_set={{result_set}}">
+<span class="ui-btn-inner ui-btn-corner-all">
+<span class="ui-btn-text">Return to {{return_page}}</span>
+</span>
+</a>
+{% if table_id != 0 %}
+<a class="ui-btn ui-btn-corner-all ui-shadow ui-btn-up-b" data-theme="b" data-transition="fade" data-role="button" href="/gettable?table_name={{table_id}}">
+<span class="ui-btn-inner ui-btn-corner-all">
+<span class="ui-btn-text">Go to Table</span>
+</span>
+</a>
+{% endif %}
+</div>
+</div>
+</body>
+</html>

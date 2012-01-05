@@ -1,0 +1,12 @@
+.free b { font-weight: bold;}
+.free b.g_r { color: #BF220C;}
+.ga_signin b { font-family: serif; font-weight: normal; font-size: 120%;}
+.ga_signin b.g_r { color: #BF220C;}
+.ga_signin b.g_b { color: #013EC2;}
+.ga_signin b.g_y { color: #E3B705;}
+.ga_signin b.g_g { color: #107C18;}
+.ga_signin span { font-weight: bold;}
+
+h2.notification-message {text-align: center;}
+
+div.desktop-only {display: none}

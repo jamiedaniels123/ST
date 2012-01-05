@@ -1,0 +1,64 @@
+<html>  
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <script type="text/javascript" src="/javascript/sportstables.js"></script>  
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+    <meta name="HandheldFriendly" content="True" />
+    <title>SportsTables! administration</title>
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-24702575-1']);
+    _gaq.push(['_trackPageview']);
+    
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>       
+  </head>
+  <body>
+    <div id="bgimage" style="width:100%">
+    <div id="nonmobile" style="width:100%">
+    <div id="wrapper" style="width:100%">
+    <div style="float:left"><a href="{{ url }}"><img src="../images/sportstables.gif" alt="SportsTables!" border="0"/></a><br/><br/></div><div><span style="color:darkblue">></span> Custom administration</div>
+    <div style="clear:left;">
+    <form action="/admin/deleteuser" method="post">
+      <select name="user_to_delete">
+      {% for u in userdata %}
+        <option value="{{u.key.id}}">{{u.username}}</option>
+      {% endfor %}
+      </select>
+      <input type="submit" value="Remove user">
+    </form>
+    </div>
+    </div>
+    </div>
+    </div>
+	<script type="text/javascript">
+	if(screen.width < 500 ||
+			navigator.userAgent.match(/Android/i) ||
+			navigator.userAgent.match(/webOS/i) ||
+			navigator.userAgent.match(/iPhone/i) ||
+			navigator.userAgent.match(/iPod/i) ) {
+		    //chill it's a mobile	 
+		} else {
+		    dbg = document.getElementById('bgimage');
+		    dbg.style.width = "100%";
+		    dbg.style.height = "100%";
+		    dbg.align = "center";
+		    dbg.style.backgroundImage = "url(../images/sportstables_bg.png)";
+		    dbg.style.backgroundPosition = "50%";
+		    dbg.style.backgroundColor = "#D3E9F5";	    	    	    		
+		    dnm = document.getElementById('nonmobile');
+		    dnm.style.width = "60%";
+		    dnm.style.height = "100%";	    
+		    dnm.align = "center";
+		    dnm.style.backgroundColor = '#8AC3E4';	    	    
+			d = document.getElementById('wrapper');
+		    d.style.width = "80%";
+		    d.align = "left";
+		}
+	</script>         
+  </body>
+</html>

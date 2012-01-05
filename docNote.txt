@@ -1,0 +1,20 @@
+//original get started
+http://code.google.com/appengine/docs/python/gettingstarted/templates.html
+
+//datastore master series
+http://code.google.com/appengine/articles/modeling.html
+http://code.google.com/appengine/articles/life_of_write.html *
+
+//datastore reference
+http://code.google.com/appengine/docs/python/datastore/
+
+//upgrade to django 1.2
+http://stackoverflow.com/questions/4994913/app-engine-default-django-version-change
+http://stackoverflow.com/questions/2165251/form-submit-button-remains-disabled-when-using-back-button-in-firefox
+http://code.google.com/appengine/docs/python/gettingstartedpython27/helloworld.html
+
+//ajax navigation
+http://jquerymobile.com/demos/1.0a4.1/docs/pages/docs-navmodel.html
+
+//facebook guide
+https://www.facebook.com/FacebookPages?v=app_7146470109
