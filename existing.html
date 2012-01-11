@@ -1,31 +1,31 @@
 <!DOCTYPE html>
-<html>  
+<html>
   <head>
-	<meta name="viewport" content="width=device-width, initial-scale=1">  
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet"  href="http://code.jquery.com/mobile/1.0rc1/jquery.mobile-1.0rc1.min.css" />
-    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />	 
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
-    <script type="text/javascript" src="/javascript/sportstables.js"></script>	
+    <script type="text/javascript" src="/javascript/sportstables.js"></script>
 	<script type="text/javascript" src="http://code.jquery.com/mobile/1.0rc1/jquery.mobile-1.0rc1.min.js"></script>
     <script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-24702575-1']);
     _gaq.push(['_trackPageview']);
-    
+
     (function() {
       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
     </script>
-    <title>Make sports tables with SportsTables! the league table generator</title>      
+    <title>Make sports tables with SportsTables! the league table generator</title>
   </head>
   <body>
 <div data-role="page" id="existing">
 
     <div data-role="header">
-    
-		<a href="./" data-icon="home" data-iconpos="notext" data-transition="slideup">Home</a>
+
+		<a href="./" data-icon="home" data-iconpos="notext" data-transition="slideup" data-ajax="false">Home</a>
 	    <h1>SportsTables!</h1>
 
 	<div data-role="navbar">
@@ -34,14 +34,15 @@
 			<li><a href="./newtable" data-direction="reverse">Create a new table</a></li>
 		</ul>
 	</div><!-- /navbar -->
-	    
+
     </div><!-- /header -->
 
-	<div data-role="content">	
-		
+	<div data-role="content">
+	{% if disable %}
+	  <p>You have not created any tables yet.</p>
+	{% endif %}
     {% for g in userdata %}
 	<h3>View a table</h3>
-				<h3></h3>   
       <form action="/gettable" method="get" data-transition="slidedown">
       <div data-role="fieldcontain">
         <label for="table_name_ID">Select a table to view</label>
@@ -64,14 +65,14 @@
         </select>
         </div>
         <input id="deletetablesubmit" type="submit" value="Delete table" {% if disable %}disabled="disabled"{% endif %}>
-      </form>     
+      </form>
     {% endfor %}
-		
+
 	</div><!-- /content -->
 
 	<div data-role="footer" class="footer-docs">
-			<p align="right">&copy; 2011 SportsTables &nbsp; <img align="top" src="./images/appengine.gif" alt="Powered by Google App Engine" border="0"/> &nbsp; </p>
+			<p align="right">&copy; 2011 SportsTables &nbsp;</p>
 	</div><!-- /footer -->
-</div><!-- /page -->  
+</div><!-- /page -->
   </body>
 </html>
