@@ -30,7 +30,7 @@ class MainPage(webapp.RequestHandler):
             u = None
             tempu = None
             login_cookie = Cookie.BaseCookie()
-            #tablecount = 0
+            tablecount = 0
             if users.get_current_user():
                 u = User.all()
                 u.filter('username = ', users.get_current_user())
@@ -47,6 +47,10 @@ class MainPage(webapp.RequestHandler):
                     tempu.fetch(1)
                     for me in u:
                         helperfunctions.transfertables(tempu, me.key().id())
+                        u.fetch(1)
+                    for g in u:
+                        for t in g.tables:
+                            tablecount += 1                        
                 url = users.create_logout_url(self.request.uri)
                 url_linktext = 'Sign out'
             else:
@@ -62,7 +66,7 @@ class MainPage(webapp.RequestHandler):
                         u.fetch(1)
                         for g in u:
                             for t in g.tables:
-                                disable = 0
+                                tablecount += 1
                     else:
                         randomid = uuid.uuid4()
                         login_cookie['sportablesuser'] = randomid
@@ -75,6 +79,7 @@ class MainPage(webapp.RequestHandler):
                 url = users.create_login_url(self.request.uri)
                 url_linktext = 'Sign in'  
             template_values = {
+                'tablecount': tablecount,
                 'url': url,
                 'url_linktext': url_linktext
                 }
@@ -552,7 +557,7 @@ class GetResults(webapp.RequestHandler):
         else:
             server_port = ''
         viewable_url  = server_name+server_port+'?table='+str(self.request.get('table_name'))
-        score_options = range(200)
+        score_options = range(300)
         template_values = {
 	    'tabledata': tb,
 	    'teamsdata': tms,
