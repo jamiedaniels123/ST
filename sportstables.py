@@ -265,25 +265,33 @@ class ExistingTable(webapp.RequestHandler):
 
 class CreateTable(webapp.RequestHandler):
     def get(self):
-        t = User.all()
+        tab = None
+        u = None
         if users.get_current_user() == None:
             if 'sportablesuser' in self.request.cookies:
-                usercookie = self.request.cookies['sportablesuser']
-                t.filter('tempusername = ', usercookie)
+                u = User.gql("WHERE tempusername = :1", self.request.cookies['sportablesuser'])
         else:
-            t.filter('username = ', users.get_current_user())
-        t.fetch(1)
-        tab = None
-        for p in t:
-            table = Table(user=p,
-                name=self.request.get('name'),
-                points_for_win=int(self.request.get('points_for_win')),
-                points_for_draw=int(self.request.get('points_for_draw')),
-                points_for_score_draw=int(self.request.get('points_for_score_draw')),
-                points_for_lose=int(self.request.get('points_for_lose')),
-                viewable=True).put()
-            tab = table.id()
-        self.redirect('/getteams?table_name=' + str(tab))
+            u = User.gql("WHERE username = :1", users.get_current_user())
+        if u != None:
+            if u.count() == 1:        
+                for p in u:
+                    table = Table(user=p,
+                        name=self.request.get('name'),
+                        points_for_win=int(self.request.get('points_for_win')),
+                        points_for_draw=int(self.request.get('points_for_draw')),
+                        points_for_score_draw=int(self.request.get('points_for_score_draw')),
+                        points_for_lose=int(self.request.get('points_for_lose')),
+                        viewable=True).put()
+                    tab = table.id()
+                self.redirect('/getteams?table_name=' + str(tab))
+            else:
+                # user has a google or temp account but has no User entity
+                #TODO: log what has happened
+                self.redirect('/')
+        else:
+            #user has neither logged in with a google account or a set a cookie
+            #TODO: log what has happened
+            self.redirect('/')                
 
 class GetTable(webapp.RequestHandler):
     def get(self):
