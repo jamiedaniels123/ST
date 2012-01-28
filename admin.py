@@ -20,8 +20,6 @@ from datetime import datetime
 class MainPage(webapp.RequestHandler):
     def get(self):
         u = User.all()
-        url = '../'
-        url_linktext = 'Home'
         disable = 1
         template_values = {
             'disable': disable
@@ -35,10 +33,10 @@ class GetSpecialReport(webapp.RequestHandler):
         #get tables that match
         tot_ts = Table.gql("")
         #add the beginning count
-        total_tables = tot_ts.count()
+        total_tables = tot_ts.count(2000)
         ts = Table.gql("WHERE name IN('SVB', :1)", u'SV Böblingen D1')
         #add the number affected with SVB and SV B
-        total_bad = ts.count()
+        total_bad = ts.count(2000)
         deletecounter = 0
         for t in ts:
             teams = Team.gql("WHERE table = :1", t)
@@ -48,7 +46,7 @@ class GetSpecialReport(webapp.RequestHandler):
         delete_tables = deletecounter        
         post_ts = Table.gql("WHERE name IN('SVB', :1)", u'SV Böblingen D1')
         #add the number remainig after the delete operation
-        remaining_tables = post_ts.count()
+        remaining_tables = post_ts.count(2000)
         template_values = {
             'total_tables': total_tables,
             'total_bad': total_bad,
@@ -67,10 +65,10 @@ class DoSpecialDeleteOp(webapp.RequestHandler):
         #get tables that match
         tot_ts = Table.gql("")
         #add the beginning count
-        total_tables = tot_ts.count()
+        total_tables = tot_ts.count(2000)
         ts = Table.gql("WHERE name IN('SVB', :1)", u'SV Böblingen D1')
         #add the number affected with SVB and SV B
-        total_bad = ts.count()
+        total_bad = ts.count(2000)
         deletecounter = 0
         for t in ts:
             teams = Team.gql("WHERE table = :1", t)
@@ -82,7 +80,7 @@ class DoSpecialDeleteOp(webapp.RequestHandler):
         delete_tables = deletecounter        
         post_ts = Table.gql("WHERE name IN('SVB', :1)", u'SV Böblingen D1')
         #add the number remainig after the delete operation
-        remaining_tables = post_ts.count()
+        remaining_tables = post_ts.count(2000)
         template_values = {
             'total_tables': total_tables,
             'total_bad': total_bad,
