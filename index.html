@@ -72,11 +72,8 @@
      </div>
 	</div><!-- /content -->
 	<div data-role="footer" class="footer-docs">
-		// THE NEXT LINE IS JUST PSEUDO CODE AS I CANT WORK OUT THE PYTHON/DJANGO/WHATEVER THIS CRAP IS.  BASICALLY IF ?appversion ISNT ON THE QUERY STRING DISPLAY THE ANDROID MARKET LOGO 
-		{% if !isset(request.querystring['appversion'])}
-			<a style="float:left" href="http://market.android.com/details?id=sportstables.com"><img src="http://www.android.com/images/brand/45_avail_market_logo2.png" alt="Available in Android Market" /></a>
-		{% endif %}
-		<p align="right">&copy; {% now "Y" %} SportsTables &nbsp;</p>
+			<!-- <a style="float:left" href="http://market.android.com/details?id=sportstables.com"><img src="http://www.android.com/images/brand/45_avail_market_logo2.png" alt="Available in Android Market" /></a>  -->
+			<p align="right">&copy; {% now "Y" %} SportsTables &nbsp;</p>
 	</div><!-- /footer -->
 </div><!-- /page -->
   </body>
