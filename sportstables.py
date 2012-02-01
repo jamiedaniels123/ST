@@ -15,6 +15,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext import db
 from dbmodel import User, Table, Team, Result
 from datetime import datetime
+import urllib
 
 COOKIE_TIME = 315360000
  
@@ -78,10 +79,19 @@ class MainPage(webapp.RequestHandler):
                     login_cookie['sportablesuser']["expires"] = COOKIE_TIME
                 url = users.create_login_url(self.request.uri)
                 url_linktext = 'Sign in'  
+            
+
+            param = urllib.urlencode({url:1})
+            urlqs = url.endswith('&') and (url + param) or (url + '&' + param)
+            isapp=0
+            if 'appversion' in urlqs:
+                isapp=1
+                
             template_values = {
                 'tablecount': tablecount,
                 'url': url,
-                'url_linktext': url_linktext
+                'url_linktext': url_linktext ,
+                'isapp' : isapp              
                 }
             path = os.path.join(os.path.dirname(__file__), 'index.html')
             self.response.out.write(template.render(path, template_values))
