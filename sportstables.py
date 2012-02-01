@@ -356,14 +356,46 @@ class DeleteTable(webapp.RequestHandler):
             #TODO: add a log message
             self.redirect('/existingtable')
         else:
-            k = db.Key.from_path('Table', table_delete)
-            helperfunctions.deletetable(k)
-            table_id = 0
-            table_object = 'table'
-            return_page = 'Your tables'      
-            object_action = 'deleted'
-            object_url = 'existingtable'        
-            self.redirect('/displaymessage?table_id='+str(table_id)+'&table_object='+table_object+'&return_page='+return_page+'&object_action='+object_action+'&object_url='+object_url)
+            u = None
+            if users.get_current_user() == None:
+                if 'sportablesuser' in self.request.cookies:
+                    u = User.gql("WHERE tempusername = :1", self.request.cookies['sportablesuser'])
+            else:
+                u = User.gql("WHERE username = :1", users.get_current_user())
+            if u != None:
+                if u.count() == 1:
+                    #test if table exists
+                    k = db.Key.from_path('Table', table_delete)
+                    tb = db.get(k)
+                    if not type(tb) is NoneType:
+                        for o in u:
+                            #test if user is owner
+                            if o.key().id() == tb.user.key().id():
+                                helperfunctions.deletetable(k)
+                                table_id = 0
+                                table_object = 'table'
+                                return_page = 'Your tables'      
+                                object_action = 'deleted'
+                                object_url = 'existingtable'        
+                                self.redirect('/displaymessage?table_id='
+                                              +str(table_id)+'&table_object='+table_object+'&return_page='
+                                              +return_page+'&object_action='+object_action+'&object_url='+object_url)
+                            else:
+                                #attempt to delete another user's table
+                                #TODO: log what has happened
+                                self.redirect('/existingtable')
+                    else:
+                        #attempt to delete a table that doesn't exist
+                        #TODO: log what has happened
+                        self.redirect('/existingtable')
+                else:
+                    # user has a google or temp account but has no User entity
+                    #TODO: log what has happened
+                    self.redirect('/existingtable')
+            else:
+                #user has neither logged in with a google account or a set a cookie
+                #TODO: log what has happened
+                self.redirect('/existingtable')
 
 class AddTeam(webapp.RequestHandler):
     def post(self):

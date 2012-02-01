@@ -5,14 +5,11 @@ from types import NoneType
 
 def deletetable(tablek):
     tb = db.get(tablek)
-    if not type(tb) is NoneType:
-        #TODO: check owner, if not then log attempt and redirect
-        tms = Team().all()
-        tms.filter('table = ', tablek)
-        for tm in tms:
-            deleteteam(tm.key(), tablek)
-        tb.delete()
-    #TODO: add an else if it's NoneType that stops displaymessage firing
+    tms = Team().all()
+    tms.filter('table = ', tablek)
+    for tm in tms:
+        deleteteam(tm.key(), tablek)
+    tb.delete()
 
 def transfertables(tempuser, uid):
     #get user key from id
@@ -88,6 +85,7 @@ def deleteresult(rsk, k):
     atm.put()
     #delete result        
     rs.delete()
+    
 
     
     
