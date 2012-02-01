@@ -81,17 +81,25 @@ class MainPage(webapp.RequestHandler):
                 url_linktext = 'Sign in'  
             
 
+            # Set var default to indicate that user is not using the app
+            notapp=0
+            # get the query string            
             param = urllib.urlencode({url:1})
             urlqs = url.endswith('&') and (url + param) or (url + '&' + param)
-            isapp=0
-            if 'appversion' in urlqs:
-                isapp=1
+  
+            # when appversion is present  set a cookie that can be picked up by all the other pages and set template var to 1
+            if 'appversion' not in urlqs:
+                login_cookie['sportablesapp'] = 1
                 
+            # check cookie again user may have returned to homepage after navigating around and lost the param form the querystring  
+            if 'sportablesapp' in self.request.cookies:
+                 notapp=1    
+             
             template_values = {
                 'tablecount': tablecount,
                 'url': url,
                 'url_linktext': url_linktext ,
-                'isapp' : isapp              
+                'notapp' : notapp              
                 }
             path = os.path.join(os.path.dirname(__file__), 'index.html')
             self.response.out.write(template.render(path, template_values))
@@ -194,6 +202,11 @@ class NewTable(webapp.RequestHandler):
                 login_cookie['sportablesuser']["expires"] = COOKIE_TIME
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Sign in'  
+            
+            notapp=0
+            if 'sportablesapp' in self.request.cookies:
+                 notapp=1
+            
         template_values = {
             'userdata': u,
             'url': url,
@@ -201,7 +214,8 @@ class NewTable(webapp.RequestHandler):
             'disable': disable,
             'administrator': is_admin,
             'logged_in': is_logged_in,
-            'temp_account': is_temp_account
+            'temp_account': is_temp_account,
+            'notapp': notapp
             }
         path = os.path.join(os.path.dirname(__file__), 'new.html')
         self.response.out.write(template.render(path, template_values))
@@ -259,6 +273,11 @@ class ExistingTable(webapp.RequestHandler):
                 login_cookie['sportablesuser']["expires"] = COOKIE_TIME
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Sign in'  
+            
+            notapp=0
+            if 'sportablesapp' in self.request.cookies:
+                 notapp=1
+                 
         template_values = {
             'userdata': u,
             'url': url,
@@ -266,7 +285,8 @@ class ExistingTable(webapp.RequestHandler):
             'disable': disable,
             'administrator': is_admin,
             'logged_in': is_logged_in,
-            'temp_account': is_temp_account
+            'temp_account': is_temp_account,
+            'notapp':notapp
             }
         path = os.path.join(os.path.dirname(__file__), 'existing.html')
         self.response.out.write(template.render(path, template_values))
@@ -338,8 +358,14 @@ class GetTable(webapp.RequestHandler):
             server_port = ''
         viewable_url  = server_name+server_port+'?table='+str(self.request.get('table_name'))
         score_options = range(200)
+        
+        notapp=0
+        if 'sportablesapp' in self.request.cookies:
+            notapp=1
+            
         template_values = {
 	    'tabledata': tb,
+        'notapp': notapp,
 	    'teamsdata': tms,
             'resultsdata': rs,            
 	    'url': url,
@@ -430,8 +456,14 @@ class GetTeams(webapp.RequestHandler):
             server_port = ''
         viewable_url  = server_name+server_port+'?table='+str(self.request.get('table_name'))
         score_options = range(200)
+        
+        notapp=0
+        if 'sportablesapp' in self.request.cookies:
+            notapp=1
+        
         template_values = {
 	    'tabledata': tb,
+        'notapp': notapp,
 	    'teamsdata': tms,	    
 	    'url': url,
 	    'url_linktext': url_linktext,
@@ -576,8 +608,14 @@ class GetResults(webapp.RequestHandler):
             server_port = ''
         viewable_url  = server_name+server_port+'?table='+str(self.request.get('table_name'))
         score_options = range(300)
+        
+        notapp=0
+        if 'sportablesapp' in self.request.cookies:
+            notapp=1
+        
         template_values = {
 	    'tabledata': tb,
+        'notapp': notapp,
 	    'teamsdata': tms,
             'result_set_data': result_set,
 	    'resultsdata': rs,            
@@ -639,8 +677,14 @@ class GetShare(webapp.RequestHandler):
             server_port = ''
         viewable_url  = server_name+server_port+'?table='+str(self.request.get('table_name'))
         score_options = range(200)
+        
+        notapp=0
+        if 'sportablesapp' in self.request.cookies:
+            notapp=1
+        
         template_values = {
 	    'tabledata': tb,
+        'notapp': notapp,
 	    'teamsdata': tms,	    
 	    'url': url,
 	    'url_linktext': url_linktext,
