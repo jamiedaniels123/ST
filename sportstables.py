@@ -40,6 +40,7 @@ class MainPage(webapp.RequestHandler):
         # when appversion is present  set a cookie that can be picked up by all the other pages and set template var to 1
         if 'appversion' not in urlqs:
             print 'Set-Cookie: sportablesapp=1';
+            notapp=1
                 
         # check cookie again user may have returned to homepage after navigating around and lost the param form the querystring  
         if 'sportablesapp' in self.request.cookies:
