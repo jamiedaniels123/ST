@@ -16,6 +16,7 @@ from google.appengine.ext import db
 from dbmodel import User, Table, Team, Result
 from datetime import datetime
 import urllib
+import time
 
 COOKIE_TIME = 315360000
  
@@ -27,6 +28,23 @@ class MainPage(webapp.RequestHandler):
         except:
             table_id = 0
         accounttype_id = 1 #once used to set temp account off a button
+        
+        # Set var default to indicate that user is not using the app
+        notapp=0
+        
+        # get the query string      
+        startingurl = self.request.uri      
+        param = urllib.urlencode({startingurl:1})
+        urlqs = startingurl.endswith('&') and (startingurl + param) or (startingurl + '&' + param)
+  
+        # when appversion is present  set a cookie that can be picked up by all the other pages and set template var to 1
+        if 'appversion' not in urlqs:
+            print 'Set-Cookie: sportablesapp=1';
+                
+        # check cookie again user may have returned to homepage after navigating around and lost the param form the querystring  
+        if 'sportablesapp' in self.request.cookies:
+                notapp=1    
+        
         if(table_id == 0):
             u = None
             tempu = None
@@ -79,21 +97,6 @@ class MainPage(webapp.RequestHandler):
                     login_cookie['sportablesuser']["expires"] = COOKIE_TIME
                 url = users.create_login_url(self.request.uri)
                 url_linktext = 'Sign in'  
-            
-
-            # Set var default to indicate that user is not using the app
-            notapp=0
-            # get the query string            
-            param = urllib.urlencode({url:1})
-            urlqs = url.endswith('&') and (url + param) or (url + '&' + param)
-  
-            # when appversion is present  set a cookie that can be picked up by all the other pages and set template var to 1
-            if 'appversion' not in urlqs:
-                login_cookie['sportablesapp'] = 1
-                
-            # check cookie again user may have returned to homepage after navigating around and lost the param form the querystring  
-            if 'sportablesapp' in self.request.cookies:
-                 notapp=1    
              
             template_values = {
                 'tablecount': tablecount,
@@ -203,9 +206,9 @@ class NewTable(webapp.RequestHandler):
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Sign in'  
             
-            notapp=0
-            if 'sportablesapp' in self.request.cookies:
-                 notapp=1
+        notapp=0
+        if 'sportablesapp' in self.request.cookies:
+            notapp=1
             
         template_values = {
             'userdata': u,
@@ -274,9 +277,9 @@ class ExistingTable(webapp.RequestHandler):
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Sign in'  
             
-            notapp=0
-            if 'sportablesapp' in self.request.cookies:
-                 notapp=1
+        notapp=0
+        if 'sportablesapp' in self.request.cookies:
+            notapp=1
                  
         template_values = {
             'userdata': u,
