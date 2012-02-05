@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 <html>
   <head>
-	<meta name="viewport" content="width=device-width, initial-scale=1">  
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet"  href="http://code.jquery.com/mobile/1.0rc1/jquery.mobile-1.0rc1.min.css" />
-    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />	 
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
-    <script type="text/javascript" src="/javascript/sportstables.js"></script>	
+    <script type="text/javascript" src="/javascript/sportstables.js"></script>
 	<script type="text/javascript" src="http://code.jquery.com/mobile/1.0rc1/jquery.mobile-1.0rc1.min.js"></script>
     <script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-24702575-1']);
     _gaq.push(['_trackPageview']);
-    
+
     (function() {
       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
     </script>
-    <title>Make sports tables with SportsTables! the league table generator</title>  
+    <title>Make sports tables with SportsTables! the league table generator</title>
   </head>
   <body>
 <div data-role="page" id="results">
   <div data-role="header">
-		<a href="./" data-icon="home" data-iconpos="notext" data-transition="slideup" rel="external">Home</a>
+		<a href="./" data-icon="home" data-iconpos="notext" data-transition="slideup" data-ajax="false">Home</a>
 	    <h1>SportsTables!</h1>
 
 	<div data-role="navbar">
@@ -37,62 +37,62 @@
 			<li><a href="/gettable?table_name={{tabledata.key.id}}" data-direction="reverse">Table</a></li>
 			<li><a href="/getteams?table_name={{tabledata.key.id}}" data-direction="reverse">Teams</a></li>
 			<li><a href="#" class="ui-btn-active">Results</a></li>
-			<li><a href="/getshare?table_name={{tabledata.key.id}}">Share</a></li>			
+			<li><a href="/getshare?table_name={{tabledata.key.id}}">Share</a></li>
 		</ul>
 	</div> <!-- /navbar -->
   </div><!-- /header -->
 
 	<div data-role="content">
 	<h2>{{tabledata.name|capfirst}}</h2>
-	<h3>Add a result</h3>    
+	<h3>Add a result</h3>
     <form action="/addresult" method="post" name="add_result_form" id="add_results_form_ID">
       <input type="hidden" name="tbl_id" value="{{tabledata.key.id}}"/>
       <div data-role="fieldcontain">
       <label for="add_home_team_id">Select a home team</label>
       <select id="add_home_team_id" name="home_team" {% if disable %}disabled="disabled"{% endif %}>
         {% for t in teamsdata %}
-        <option value="{{t.key.id}}">{{t.name|capfirst}}</option>               
-        {% endfor %}                           
+        <option value="{{t.key.id}}">{{t.name|capfirst}}</option>
+        {% endfor %}
       </select>
       </div>
       <div data-role="fieldcontain">
-      <label for="add_home_team_score_id">Select a home team score</label>      
+      <label for="add_home_team_score_id">Select a home team score</label>
       <select id="add_home_team_score_id" name="home_team_score" {% if disable %}disabled="disabled"{% endif %}>
         {% for sc in score_options %}
-        <option value="{{sc}}">{{sc}}</option>               
-        {% endfor %}                           
+        <option value="{{sc}}">{{sc}}</option>
+        {% endfor %}
       </select>
       </div>
       <div data-role="fieldcontain">
-      <label for="add_away_team_id">Select an away team</label>      
+      <label for="add_away_team_id">Select an away team</label>
       <select id="add_away_team_id" name="away_team" {% if disable %}disabled="disabled"{% endif %}>
         {% for t in teamsdata reversed%}
-        <option value="{{t.key.id}}">{{t.name|capfirst}}</option>               
-        {% endfor %}                           
+        <option value="{{t.key.id}}">{{t.name|capfirst}}</option>
+        {% endfor %}
       </select>
       </div>
       <div data-role="fieldcontain">
-      <label for="add_away_team_score_id">Select a away team score</label>      
+      <label for="add_away_team_score_id">Select a away team score</label>
       <select id="add_away_team_score_id" name="away_team_score" {% if disable %}disabled="disabled"{% endif %}>
         {% for sc in score_options %}
-        <option value="{{sc}}">{{sc}}</option>               
-        {% endfor %}                           
-      </select> 
-      </div>               
+        <option value="{{sc}}">{{sc}}</option>
+        {% endfor %}
+      </select>
+      </div>
       <input type="submit" value="Add result" {% if disable %}disabled="disabled"{% endif %}>
     </form>
     <h3>Show results</h3>
     <form action="/getresults" name="show_results_form" id="show_results_form_ID" method="get">
-      <input type="hidden" name="table_name" value="{{tabledata.key.id}}"/>      
+      <input type="hidden" name="table_name" value="{{tabledata.key.id}}"/>
       <div data-role="fieldcontain">
       <label for="result_set_ID">Select a result set to show</label>
       <select name="result_set" id="result_set_ID" {% if disable %}disabled="disabled"{% endif %}>
-        <option value="0">All</option> 
+        <option value="0">All</option>
         {% for t in teamsdata %}
-        <option value="{{t.key.id}}" {% if t.key.id == result_set_data%}selected="selected"{% endif %}>{{t.name|capfirst}}</option>               
-        {% endfor %}                           
+        <option value="{{t.key.id}}" {% if t.key.id == result_set_data%}selected="selected"{% endif %}>{{t.name|capfirst}}</option>
+        {% endfor %}
       </select>
-      </div>                
+      </div>
       <input type="submit" value="Show results" {% if disable %}disabled="disabled"{% endif %}>
     </form>
     <table bgcolor="#FFFFFF" border="0" cellpadding="10" cellspacing="0" width="100%">
@@ -100,7 +100,7 @@
       <tr>
       <td>
         <strong>{{r.home_team_name|capfirst}} {{r.home_team_score}} v {{r.away_team_name|capfirst}} {{r.away_team_score}}</strong>
-      </td>      
+      </td>
       <td align="right">
       <form action="/deleteresult" method="post">
         <input type="hidden" name="table_id" value="{{tabledata.key.id}}">
@@ -108,8 +108,8 @@
         <input type="hidden" name="result_id" value="{{r.key.id}}">
         <input type="submit" value="Delete" data-inline="true">
       </form>
-      </td>    
-      </tr>  
+      </td>
+      </tr>
       {% endfor %}
     </table>
 	</div><!-- /content -->
@@ -117,7 +117,7 @@
 	<div data-role="footer" class="footer-docs">
 			<p align="right">&copy; 2011 SportsTables &nbsp;</p>
 	</div><!-- /footer -->
-</div><!-- /page -->           
+</div><!-- /page -->
   </body>
 </html>
 

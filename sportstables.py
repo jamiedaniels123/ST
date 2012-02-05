@@ -665,16 +665,68 @@ class GetResults(webapp.RequestHandler):
             
 class DeleteResult(webapp.RequestHandler):
     def post(self):
-        rsk = db.Key.from_path('Result', int(self.request.get('result_id')))
-        k = db.Key.from_path('Table', int(self.request.get('table_id')))        
-        helperfunctions.deleteresult(rsk, k)
-        table_id = self.request.get('table_id')
-        table_object = 'result'
-        return_page = 'Results'       
-        object_action = 'deleted'
-        object_url = 'getresults'
-        result_set = self.request.get('result_set')
-        self.redirect('/displaymessage?table_id='+str(table_id)+'&table_object='+table_object+'&return_page='+return_page+'&object_action='+object_action+'&object_url='+object_url+'&result_set='+result_set)
+        #test param exists and is right type
+        try:
+            table_delete = int(self.request.get('table_id'))
+        except:
+            table_delete = 0
+        try:
+            result_delete = int(self.request.get('result_id'))
+        except:
+            result_delete = 0
+        try:
+            result_set = int(self.request.get('result_set'))
+        except:
+            result_set = 0            
+        if(table_delete == 0 or result_delete == 0):
+            #param or type wrong
+            #TODO: add a log message
+            self.redirect('/existingtable')
+        else:            
+            u = None
+            if users.get_current_user() == None:
+                if 'sportablesuser' in self.request.cookies:
+                    u = User.gql("WHERE tempusername = :1", self.request.cookies['sportablesuser'])
+            else:
+                u = User.gql("WHERE username = :1", users.get_current_user())
+            if u != None:
+                if u.count() == 1:
+                    #test if table and team exists
+                    tablek = db.Key.from_path('Table', table_delete)
+                    tablet = db.get(tablek)
+                    resultk = db.Key.from_path('Result', result_delete)
+                    resultt = db.get(resultk)                    
+                    if not type(tablet) is NoneType and not type(resultt) is NoneType:
+                        for o in u:
+                            #test if user is table owner and table owns team                           
+                            if (o.key().id() == tablet.user.key().id() and
+                                        tablet.key().id() == resultt.table.key().id()):
+                                #delete team using helperfunctions.function
+                                helperfunctions.deleteresult(resultk, tablek)
+                                table_object = 'result'
+                                return_page = 'Results'       
+                                object_action = 'deleted'
+                                object_url = 'getresults'
+                                self.redirect('/displaymessage?table_id='+
+                                          str(table_delete)+'&table_object='+table_object+'&return_page='+
+                                          return_page+'&object_action='+object_action+'&object_url='+
+                                          object_url+'&result_set='+str(result_set))
+                            else:
+                                #attempt to delete another user's team
+                                #TODO: log what has happened
+                                self.redirect('/existingtable')
+                    else:
+                        #attempt to delete a team that doesn't exist (or its table doesn't exist)
+                        #TODO: log what has happened
+                        self.redirect('/existingtable')
+                else:
+                    # user has a google or temp account but has no User entity
+                    #TODO: log what has happened
+                    self.redirect('/existingtable')
+            else:
+                #user has neither logged in with a google account or a set a cookie
+                #TODO: log what has happened
+                self.redirect('/existingtable')
 
 class GetShare(webapp.RequestHandler):
     def get(self):
