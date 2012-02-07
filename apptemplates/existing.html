@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet"  href="/stylesheets/jquery.mobile-1.0.1.min.css" />
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+	<script type="text/javascript" src="/javascript/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="/javascript/sportstables.js"></script>
+	<script type="text/javascript" src="/javascript/jquery.mobile-1.0.1.min.js"></script>
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-24702575-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+    <title>Make sports tables with SportsTables! the league table generator</title>
+  </head>
+  <body>
+<div data-role="page" id="existing">
+
+    <div data-role="header">
+
+		<a href="./" data-icon="home" data-iconpos="notext" data-transition="slideup" data-ajax="false">Home</a>
+	    <h1>SportsTables!</h1>
+
+	<div data-role="navbar">
+		<ul>
+			<li><a href="#" class="ui-btn-active">Your tables</a></li>
+			<li><a href="./newtable" data-direction="reverse">Create a new table</a></li>
+		</ul>
+	</div><!-- /navbar -->
+
+    </div><!-- /header -->
+
+	<div data-role="content">
+	{% if disable %}
+	  <p>You have not created any tables yet.</p>
+	{% endif %}
+    {% for g in userdata %}
+	<h3>View a table</h3>
+      <form action="/gettable" method="get" data-transition="slidedown">
+      <div data-role="fieldcontain">
+        <label for="table_name_ID">Select a table to view</label>
+        <select name="table_name" id="table_name_ID" {% if disable %}disabled="disabled"{% endif %}>
+          {% for t in g.tables %}
+            <option value="{{t.key.id}}">{{t.name|capfirst}}</option>
+          {% endfor %}
+        </select>
+        </div>
+        <input type="submit" value="View table" {% if disable %}disabled="disabled"{% endif %}>
+      </form>
+      <h3>Delete a table</h3>
+      <form action="/deletetable" method="get">
+        <div data-role="fieldcontain">
+        <label for="table_to_delete_ID">Select a table to delete</label>
+        <select name="table_to_delete" id="table_to_delete_ID" {% if disable %}disabled="disabled"{% endif %}>
+          {% for t in g.tables %}
+            <option value="{{t.key.id}}">{{t.name|capfirst}}</option>
+          {% endfor %}
+        </select>
+        </div>
+        <input id="deletetablesubmit" type="submit" value="Delete table" {% if disable %}disabled="disabled"{% endif %}>
+      </form>
+    {% endfor %}
+
+	</div><!-- /content -->
+
+	<div data-role="footer" class="footer-docs">
+			{% if notapp %}
+	  			<a style="float:left;" href="http://market.android.com/details?id=sportstables.com"><img src="http://www.android.com/images/brand/45_avail_market_logo2.png" alt="Available in Android Market" /></a>
+			{% endif %}
+			<p align="right">&copy; 2011 SportsTables &nbsp;</p>
+	</div><!-- /footer -->
+</div><!-- /page -->
+  </body>
+</html>

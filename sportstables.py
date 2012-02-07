@@ -19,6 +19,8 @@ import urllib
 import time
 
 COOKIE_TIME = 315360000
+
+apptemplates=1
  
 class MainPage(webapp.RequestHandler):
     def get(self):
@@ -106,7 +108,12 @@ class MainPage(webapp.RequestHandler):
                 'url_linktext': url_linktext ,
                 'notapp' : notapp              
                 }
-            path = os.path.join(os.path.dirname(__file__), 'index.html')
+            # 
+            if apptemplates :
+                path = os.path.join(os.path.dirname(__file__), 'apptemplates/index.html')
+            else : 
+                path = os.path.join(os.path.dirname(__file__), 'index.html')
+                
             self.response.out.write(template.render(path, template_values))
             for morsel in login_cookie.values():
                 self.response.headers.add_header('Set-Cookie',morsel.OutputString(None))
@@ -145,13 +152,18 @@ class MainPage(webapp.RequestHandler):
                         for o in u:
                             if o.key().id() == t.user.key().id():
                                 is_table_owner = True
+          
             template_values = {
                 'tabledata': t,
                 'teamsdata': tms,
                 'resultsdata': rs,
                 'owner': is_table_owner
                 }
-            path = os.path.join(os.path.dirname(__file__), 'viewer.html')
+            if apptemplates :
+                path = os.path.join(os.path.dirname(__file__), 'apptemplates/viewer.html')
+            else :
+                path = os.path.join(os.path.dirname(__file__), 'viewer.html')
+                
             self.response.out.write(template.render(path, template_values))
             for morsel in login_cookie.values():
                 self.response.headers.add_header('Set-Cookie',morsel.OutputString(None))
@@ -222,7 +234,12 @@ class NewTable(webapp.RequestHandler):
             'temp_account': is_temp_account,
             'notapp': notapp
             }
-        path = os.path.join(os.path.dirname(__file__), 'new.html')
+        
+        if apptemplates :
+            path = os.path.join(os.path.dirname(__file__), 'apptemplates/new.html')
+        else :
+            path = os.path.join(os.path.dirname(__file__), 'new.html')
+            
         self.response.out.write(template.render(path, template_values))
         for morsel in login_cookie.values():
             self.response.headers.add_header('Set-Cookie',morsel.OutputString(None))
@@ -293,7 +310,12 @@ class ExistingTable(webapp.RequestHandler):
             'temp_account': is_temp_account,
             'notapp':notapp
             }
-        path = os.path.join(os.path.dirname(__file__), 'existing.html')
+        
+        if apptemplates :
+            path = os.path.join(os.path.dirname(__file__), 'apptemplates/existing.html')
+        else :
+            path = os.path.join(os.path.dirname(__file__), 'existing.html')
+            
         self.response.out.write(template.render(path, template_values))
         for morsel in login_cookie.values():
             self.response.headers.add_header('Set-Cookie',morsel.OutputString(None))
@@ -380,7 +402,11 @@ class GetTable(webapp.RequestHandler):
             'viewable_url': viewable_url,
             'score_options': score_options
         }
-        path = os.path.join(os.path.dirname(__file__), 'table.html')
+        if apptemplates :
+            path = os.path.join(os.path.dirname(__file__), 'apptemplates/table.html')
+        else :
+            path = os.path.join(os.path.dirname(__file__), 'table.html')
+            
         self.response.out.write(template.render(path, template_values))
         for morsel in login_cookie.values():
             self.response.headers.add_header('Set-Cookie',morsel.OutputString(None))        
@@ -477,7 +503,12 @@ class GetTeams(webapp.RequestHandler):
             'viewable_url': viewable_url,
             'score_options': score_options
         }
-        path = os.path.join(os.path.dirname(__file__), 'teams.html')
+        
+        if apptemplates :
+            path = os.path.join(os.path.dirname(__file__), 'apptemplates/teams.html')
+        else:
+            path = os.path.join(os.path.dirname(__file__), 'teams.html')
+            
         self.response.out.write(template.render(path, template_values))
         for morsel in login_cookie.values():
             self.response.headers.add_header('Set-Cookie',morsel.OutputString(None))        
@@ -631,7 +662,11 @@ class GetResults(webapp.RequestHandler):
             'viewable_url': viewable_url,
             'score_options': score_options
         }
-        path = os.path.join(os.path.dirname(__file__), 'results.html')
+        
+        if apptemplates:
+            path = os.path.join(os.path.dirname(__file__), 'apptemplates/results.html')
+        else:
+            path = os.path.join(os.path.dirname(__file__), 'results.html')
         self.response.out.write(template.render(path, template_values))
         for morsel in login_cookie.values():
             self.response.headers.add_header('Set-Cookie',morsel.OutputString(None))
@@ -698,7 +733,12 @@ class GetShare(webapp.RequestHandler):
             'viewable_url': viewable_url,
             'score_options': score_options
         }
-        path = os.path.join(os.path.dirname(__file__), 'share.html')
+        
+        if apptemplates:
+            path = os.path.join(os.path.dirname(__file__), 'apptemplates/share.html')
+        else:
+            path = os.path.join(os.path.dirname(__file__), 'share.html')
+            
         self.response.out.write(template.render(path, template_values))
         for morsel in login_cookie.values():
             self.response.headers.add_header('Set-Cookie',morsel.OutputString(None))        
@@ -745,8 +785,13 @@ class DisplayMessage(webapp.RequestHandler):
 	    'object_action': object_action,
             'object_url': object_url,
             'result_set': result_set
-        }        
-        path = os.path.join(os.path.dirname(__file__), 'displaymessage.html')
+        }      
+        
+        if apptemplates:  
+            path = os.path.join(os.path.dirname(__file__), 'apptemplates/displaymessage.html')
+        else:
+            path = os.path.join(os.path.dirname(__file__), 'displaymessage.html')
+            
         self.response.out.write(template.render(path, template_values))
 
 class TestMessage(webapp.RequestHandler):
