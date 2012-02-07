@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
   <head>
-	<meta name="viewport" content="width=device-width, initial-scale=1">  
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet"  href="http://code.jquery.com/mobile/1.0rc1/jquery.mobile-1.0rc1.min.css" />
-    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />	 
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
-    <script type="text/javascript" src="/javascript/sportstables.js"></script>	
+    <script type="text/javascript" src="/javascript/sportstables.js"></script>
 	<script type="text/javascript" src="http://code.jquery.com/mobile/1.0rc1/jquery.mobile-1.0rc1.min.js"></script>
     <script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-24702575-1']);
     _gaq.push(['_trackPageview']);
-    
+
     (function() {
       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
@@ -37,31 +37,31 @@
 			<li><a href="/gettable?table_name={{tabledata.key.id}}" data-direction="reverse">Table</a></li>
 			<li><a href="#" class="ui-btn-active">Teams</a></li>
 			<li><a href="/getresults?table_name={{tabledata.key.id}}">Results</a></li>
-			<li><a href="/getshare?table_name={{tabledata.key.id}}">Share</a></li>			
+			<li><a href="/getshare?table_name={{tabledata.key.id}}" data-ajax="false">Share</a></li>
 		</ul>
 	</div> <!-- /navbar -->
   </div><!-- /header -->
 
 	<div data-role="content">
 	<h2>{{tabledata.name|capfirst}}</h2>
-	<h3>Add a team</h3>    
+	<h3>Add a team</h3>
     <form action="/addteam" method="post" name="add_team_form">
       <input type="hidden" name="tbl_id" value="{{tabledata.key.id}}"/>
       <label for="name_ID">Enter team name</label>
-      <input onFocus="return clearDefaultText('add_team_form', 'name_ID', 'Enter a name here')" type="text" name="name" id="name_ID" value="Enter a name here"></input>                   
+      <input onFocus="return clearDefaultText('add_team_form', 'name_ID', 'Enter a name here')" type="text" name="name" id="name_ID" value="Enter a name here"></input>
       <input type="submit" value="Add new team">
     </form>
-    <h3>Delete a team</h3> 
+    <h3>Delete a team</h3>
     <form action="/deleteteam" method="post">
       <input type="hidden" name="tbl_id" value="{{tabledata.key.id}}"/>
       <div data-role="fieldcontain">
-      <label for="team_to_delete_ID">Select team to delete</label> 
+      <label for="team_to_delete_ID">Select team to delete</label>
       <select name="team_to_delete" id="team_to_delete_ID" {% if disable2 %}disabled="disabled"{% endif %}>
         {% for t in teamsdata %}
-        <option value="{{t.key.id}}">{{t.name|capfirst}}</option>               
-        {% endfor %}                           
+        <option value="{{t.key.id}}">{{t.name|capfirst}}</option>
+        {% endfor %}
       </select>
-      </div>                  
+      </div>
       <input type="submit" value="Delete team" {% if disable2 %}disabled="disabled"{% endif %}>
     </form>
 
@@ -70,7 +70,7 @@
 	<div data-role="footer" class="footer-docs">
 			<p align="right">&copy; 2011 SportsTables &nbsp;</p>
 	</div><!-- /footer -->
-</div><!-- /page -->           
+</div><!-- /page -->
   </body>
 </html>
 

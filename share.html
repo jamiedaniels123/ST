@@ -18,6 +18,9 @@
       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
     </script>
+    <title>Make sports tables with SportsTables! the league table generator</title>
+  </head>
+  <body>
     <div id="fb-root"></div>
 	<script>(function(d, s, id) {
 	  var js, fjs = d.getElementsByTagName(s)[0];
@@ -25,10 +28,7 @@
 	  js = d.createElement(s); js.id = id;
 	  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=8704297868";
 	  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
-    <title>Make sports tables with SportsTables! the league table generator</title>
-  </head>
-  <body>
+      }(document, 'script', 'facebook-jssdk'));</script>
 <div data-role="page" id="share">
   <div data-role="header">
 		<a href="./" data-icon="home" data-iconpos="notext" data-transition="slideup" data-ajax="false">Home</a>
@@ -57,9 +57,8 @@
       <span style="background-color:lightgrey;">
         <a href="/?table={{tabledata.key.id}}" data-transition="slidedown">{{viewable_url}}</a>
       </span>
-      <div class="fb-like" data-href="http://{{viewable_url}}" data-send="true" data-width="450" data-show-faces="true"></div>
     </p>
-    <form action="/makeviewable" method="get">
+    <form action="/makeviewable" method="get" data-ajax="false">
       <input type="hidden" name="tbl_id" value="{{tabledata.key.id}}"/>
       <input type="hidden" name="viewable" {% if tabledata.viewable %}value="0"{% else %}value="1"{% endif %}/>
      <p>It is currently {% if tabledata.viewable %}<strong>open</strong>{% else %}<strong>closed</strong>{% endif %} to the world.</p>
@@ -67,6 +66,9 @@
     </form>
       <p>To embed your table in another website just copy and paste the following html code:</p>
       <textarea>&lt;iframe src="http://{{viewable_url}}" height="270" width="480" frameborder="0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+      <p>
+      <div class="fb-like" data-href="http://{{viewable_url}}" data-send="true" data-width="450" data-show-faces="true"></div>
+      </p>
 	</div><!-- /content -->
 
 	<div data-role="footer" class="footer-docs">
