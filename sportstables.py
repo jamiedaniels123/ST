@@ -794,39 +794,72 @@ class GetShare(webapp.RequestHandler):
 
 class MakeViewable(webapp.RequestHandler):
     def get(self):
-        k = db.Key.from_path('Table', int(self.request.get('tbl_id')))
-        t = db.get(k)
-        #update viewable boolean
-        t.viewable = bool(int(self.request.get('viewable')))
-        t.put()
-        self.redirect('/getshare?table_name=' + str(t.key().id()))
-
-class ReceiveMessage(webapp.RequestHandler):
-    def get(self):
-        #collect the vars, test them though
-        table_id = self.request.get('table_id')
-        table_object = self.request.get('table_object')
-        return_page = self.request.get('return_page')        
-        object_action = self.request.get('object_action')
-        object_url = self.request.get('object_url')
-        result_set = self.request.get('result_set')
+        #test param exists and is right type
         try:
-            result_set = int(result_set)
+            table_get = int(self.request.get('tbl_id'))
         except:
-            result_set = 0        
-        #call message object maker method
-        #pass params on to the displayer
-        self.redirect('/displaymessage?table_id='+str(table_id)+'&table_object='+table_object+'&return_page='+return_page+'&object_action='+object_action+'&object_url='+object_url+'&result_set='+result_set)        
+            table_get = 0;
+        try:
+            viewable_get = int(self.request.get('viewable'))
+        except:
+            viewable_get = None;            
+        if(table_get == 0):
+            #param or type wrong
+            #TODO: add a log message
+            self.redirect('/existingtable')
+        else:
+            u = None
+            if users.get_current_user() == None:
+                if 'sportablesuser' in self.request.cookies:
+                    u = User.gql("WHERE tempusername = :1", self.request.cookies['sportablesuser'])
+            else:
+                u = User.gql("WHERE username = :1", users.get_current_user())
+            if u != None:
+                if u.count() == 1:
+                    #test if table exists
+                    k = db.Key.from_path('Table', table_get)
+                    tb = db.get(k)
+                    if not type(tb) is NoneType:
+                        for o in u:
+                            #test if user is owner
+                            if o.key().id() == tb.user.key().id():
+                                #update viewable boolean if set to number
+                                if viewable_get != None:
+                                    tb.viewable = bool(viewable_get)
+                                    tb.put()
+                                self.redirect('/getshare?table_name=' + str(table_get))
+                            else:
+                                #attempt to get another user's table
+                                #TODO: log what has happened
+                                self.redirect('/existingtable')
+                    else:
+                        #attempt to get a table that doesn't exist
+                        #TODO: log what has happened
+                        self.redirect('/existingtable')
+                else:
+                    # user has a google or temp account but has no User entity
+                    #TODO: log what has happened
+                    self.redirect('/existingtable')
+            else:
+                #user has neither logged in with a google account or a set a cookie
+                #TODO: log what has happened
+                self.redirect('/existingtable')
 
 class DisplayMessage(webapp.RequestHandler):
     def get(self):
         #parse the params method into template values
-        table_id = int(self.request.get('table_id'))
-        table_object = self.request.get('table_object')
-        return_page = self.request.get('return_page')        
-        object_action = self.request.get('object_action')
-        object_url = self.request.get('object_url')
-        result_set = self.request.get('result_set')        
+        try:
+            table_id = int(self.request.get('table_id'))
+        except:
+            table_id = 0
+        try:
+            result_set = int(self.request.get('result_set'))
+        except:
+            result_set = 0
+        table_object = str(self.request.get('table_object', default_value="message"))            
+        return_page = str(self.request.get('return_page', default_value="Your tables"))
+        object_action = str(self.request.get('object_action', default_value="displayed"))
+        object_url = str(self.request.get('object_url', default_value="existingtable"))      
         template_values = {
             'table_id': table_id,
 	    'table_object': table_object,
@@ -836,16 +869,7 @@ class DisplayMessage(webapp.RequestHandler):
             'result_set': result_set
         }        
         path = os.path.join(os.path.dirname(__file__), 'displaymessage.html')
-        self.response.out.write(template.render(path, template_values))
-
-class TestMessage(webapp.RequestHandler):
-    def get(self):
-        #build some vars to pass
-        table_id = 298
-        table_object = 'Result'
-        object_action = 'Deleted'
-        object_url = 'getresults'
-        self.redirect('/receivemessage?table_id='+str(table_id)+'&table_object='+table_object+'&object_action='+object_action+'&object_url='+object_url)       
+        self.response.out.write(template.render(path, template_values))       
 
 application = webapp.WSGIApplication(
                                      [('/', MainPage),
@@ -862,10 +886,8 @@ application = webapp.WSGIApplication(
                                       ('/deleteresult', DeleteResult),
                                       ('/getshare', GetShare),
                                       ('/makeviewable', MakeViewable),
-                                      ('/receivemessage', ReceiveMessage),
-                                      ('/displaymessage', DisplayMessage),
-                                      ('/testmessage', TestMessage)],
-                                      debug=True)
+                                      ('/displaymessage', DisplayMessage)],
+                                      debug=False)
  
 def main():
     run_wsgi_app(application)
