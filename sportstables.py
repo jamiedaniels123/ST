@@ -20,9 +20,8 @@ COOKIE_TIME = 315360000
  
 class MainPage(webapp.RequestHandler):
     def get(self):
-        table_id = self.request.get('table')
         try:
-            test_table_id = int(table_id)
+            table_id = int(self.request.get('table'))
         except:
             table_id = 0
         accounttype_id = 1 #once used to set temp account off a button
@@ -407,73 +406,133 @@ class DeleteTable(webapp.RequestHandler):
 
 class AddTeam(webapp.RequestHandler):
     def post(self):
-        k = db.Key.from_path('Table', int(self.request.get('tbl_id')))
-        t = db.get(k)      
-        team = Team(table=t,
-            name=self.request.get('name'),
-            games_played=0,
-            games_won=0,
-            games_drawn=0,
-            games_lost=0,
-            goals_for=0,
-            goals_against=0,
-            goal_difference=0,
-            points_deducted=0,           
-            points=0).put()
-        table_id = self.request.get('tbl_id')
-        table_object = 'team'
-        return_page = 'Teams'       
-        object_action = 'added'
-        object_url = 'getteams'        
-        self.redirect('/displaymessage?table_id='+str(table_id)+'&table_object='+table_object+'&return_page='+return_page+'&object_action='+object_action+'&object_url='+object_url)
+        #test param exists and is right type
+        try:
+            table_get = int(self.request.get('tbl_id'))
+        except:
+            table_get = 0;
+        table_name = str(self.request.get('name', default_value="Unnamed team"))            
+        if(table_get == 0):
+            #param or type wrong
+            #TODO: add a log message
+            self.redirect('/existingtable')
+        else:
+            u = None
+            if users.get_current_user() == None:
+                if 'sportablesuser' in self.request.cookies:
+                    u = User.gql("WHERE tempusername = :1", self.request.cookies['sportablesuser'])
+            else:
+                u = User.gql("WHERE username = :1", users.get_current_user())
+            if u != None:
+                if u.count() == 1:
+                    #test if table exists
+                    k = db.Key.from_path('Table', table_get)
+                    tb = db.get(k)
+                    if not type(tb) is NoneType:
+                        for o in u:
+                            #test if user is owner
+                            if o.key().id() == tb.user.key().id():
+                                team = Team(table=tb,
+                                    name=table_name,
+                                    games_played=0,
+                                    games_won=0,
+                                    games_drawn=0,
+                                    games_lost=0,
+                                    goals_for=0,
+                                    goals_against=0,
+                                    goal_difference=0,
+                                    points_deducted=0,           
+                                    points=0).put()
+                                table_id = table_get
+                                table_object = 'team'
+                                return_page = 'Teams'       
+                                object_action = 'added'
+                                object_url = 'getteams'        
+                                self.redirect('/displaymessage?table_id='+str(table_id)+
+                                          '&table_object='+table_object+'&return_page='+
+                                          return_page+'&object_action='+object_action+'&object_url='+object_url)
+                            else:
+                                #attempt to add a team to another user's table
+                                #TODO: log what has happened
+                                self.redirect('/existingtable')
+                    else:
+                        #attempt to add team to a table that doesn't exist
+                        #TODO: log what has happened
+                        self.redirect('/existingtable')
+                else:
+                    # user has a google or temp account but has no User entity
+                    #TODO: log what has happened
+                    self.redirect('/existingtable')
+            else:
+                #user has neither logged in with a google account or a set a cookie
+                #TODO: log what has happened
+                self.redirect('/existingtable')
         
 class GetTeams(webapp.RequestHandler):
     def get(self):
-        usercookie = None
-        login_cookie = Cookie.BaseCookie()
-        if 'sportablesuser' in self.request.cookies:
-            usercookie = self.request.cookies['sportablesuser']
-            login_cookie['sportablesuser'] = usercookie
-            login_cookie['sportablesuser']["expires"] = COOKIE_TIME
-        k = db.Key.from_path('Table', int(self.request.get('table_name')))
-        tb = db.get(k)
-        tms = Team().all()
-        tms.filter('table = ', k)
-        tms.order('-points')
-        tms.order('-goal_difference')
-        tms.order('-goals_for')
-        tms.order('name')
-        if(tms.count()<2):
-            disable = 1
+        #test param exists and is right type
+        try:
+            table_get = int(self.request.get('table_name'))
+        except:
+            table_get = 0;           
+        if(table_get == 0):
+            #param or type wrong
+            #TODO: add a log message
+            self.redirect('/existingtable')
         else:
-            disable = 0
-        if(tms.count()<1):
-            disable2 = 1
-        else:
-            disable2 = 0            
-        url = './'
-        url_linktext = 'Home'
-        server_name = os.environ['SERVER_NAME']
-        if (server_name == 'localhost'):
-            server_port = ':'+os.environ['SERVER_PORT']
-        else:
-            server_port = ''
-        viewable_url  = server_name+server_port+'?table='+str(self.request.get('table_name'))
-        score_options = range(200)
-        template_values = {
-	    'tabledata': tb,
-	    'teamsdata': tms,	    
-	    'url': url,
-	    'url_linktext': url_linktext,
-	    'disable': disable,
-            'disable2': disable2,
-            'viewable_url': viewable_url,
-            'score_options': score_options
-        }
-        path = os.path.join(os.path.dirname(__file__), 'teams.html')
-        self.response.out.write(template.render(path, template_values))
-        for morsel in login_cookie.values():
-            self.response.headers.add_header('Set-Cookie',morsel.OutputString(None))        
+            u = None
+            if users.get_current_user() == None:
+                if 'sportablesuser' in self.request.cookies:
+                    u = User.gql("WHERE tempusername = :1", self.request.cookies['sportablesuser'])
+            else:
+                u = User.gql("WHERE username = :1", users.get_current_user())
+            if u != None:
+                if u.count() == 1:
+                    #test if table exists
+                    k = db.Key.from_path('Table', table_get)
+                    tb = db.get(k)
+                    if not type(tb) is NoneType:
+                        for o in u:
+                            #test if user is owner
+                            if o.key().id() == tb.user.key().id():
+                                tms = Team().all()
+                                tms.filter('table = ', k)
+                                tms.order('-points')
+                                tms.order('-goal_difference')
+                                tms.order('-goals_for')
+                                tms.order('name')
+                                if(tms.count()<2):
+                                    disable = 1
+                                else:
+                                    disable = 0
+                                if(tms.count()<1):
+                                    disable2 = 1
+                                else:
+                                    disable2 = 0
+                                template_values = {
+                                    'tabledata': tb,
+                                    'teamsdata': tms,
+                                    'disable': disable,
+                                    'disable2': disable2
+                                }
+                                path = os.path.join(os.path.dirname(__file__), 'teams.html')
+                                self.response.out.write(template.render(path, template_values))
+                            else:
+                                #attempt to get teams from another user's table
+                                #TODO: log what has happened
+                                self.redirect('/existingtable')
+                    else:
+                        #attempt to get teams from a table that doesn't exist
+                        #TODO: log what has happened
+                        self.redirect('/existingtable')
+                else:
+                    # user has a google or temp account but has no User entity
+                    #TODO: log what has happened
+                    self.redirect('/existingtable')
+            else:
+                #user has neither logged in with a google account or a set a cookie
+                #TODO: log what has happened
+                self.redirect('/existingtable')        
 
 class DeleteTeam(webapp.RequestHandler):
     def post(self):     
