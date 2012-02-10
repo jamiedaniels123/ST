@@ -266,6 +266,7 @@ class CreateTable(webapp.RequestHandler):
     def get(self):
         tab = None
         u = None
+        table_name = self.request.get('name', default_value="Unnamed table")        
         if users.get_current_user() == None:
             if 'sportablesuser' in self.request.cookies:
                 u = User.gql("WHERE tempusername = :1", self.request.cookies['sportablesuser'])
@@ -275,7 +276,7 @@ class CreateTable(webapp.RequestHandler):
             if u.count() == 1:        
                 for p in u:
                     table = Table(user=p,
-                        name=self.request.get('name'),
+                        name=table_name,
                         points_for_win=int(self.request.get('points_for_win')),
                         points_for_draw=int(self.request.get('points_for_draw')),
                         points_for_score_draw=int(self.request.get('points_for_score_draw')),
@@ -411,7 +412,7 @@ class AddTeam(webapp.RequestHandler):
             table_get = int(self.request.get('tbl_id'))
         except:
             table_get = 0;
-        table_name = str(self.request.get('name', default_value="Unnamed team"))            
+        table_name = self.request.get('name', default_value="Unnamed team")            
         if(table_get == 0):
             #param or type wrong
             #TODO: add a log message
