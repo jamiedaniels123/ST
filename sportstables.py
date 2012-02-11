@@ -615,67 +615,127 @@ class DeleteTeam(webapp.RequestHandler):
 
 class AddResult(webapp.RequestHandler):
     def post(self):
-        k = db.Key.from_path('Table', int(self.request.get('tbl_id')))
-        t = db.get(k)
-        #update home team
-        htk = db.Key.from_path('Team', int(self.request.get('home_team')))
-        htm = db.get(htk)            
-        htm.games_played = htm.games_played + 1
-        pts = 0
-        if int(self.request.get('home_team_score')) > int(self.request.get('away_team_score')):
-            htm.games_won = htm.games_won + 1
-            pts = t.points_for_win  
-        elif int(self.request.get('home_team_score')) > 0 and (int(self.request.get('home_team_score')) == int(self.request.get('away_team_score'))):
-            htm.games_drawn = htm.games_drawn + 1
-            pts = t.points_for_score_draw
-        elif int(self.request.get('home_team_score')) == 0 and (int(self.request.get('home_team_score')) == int(self.request.get('away_team_score'))):
-            htm.games_drawn = htm.games_drawn + 1
-            pts = t.points_for_draw             
+        #test param exists and is right type
+        try:
+            table_get = int(self.request.get('tbl_id'))
+        except:
+            table_get = 0
+        try:
+            home_team = int(self.request.get('home_team'))
+        except:
+            home_team = 0
+        try:
+            away_team = int(self.request.get('away_team'))
+        except:
+            away_team = 0
+        try:
+            home_team_score = int(self.request.get('home_team_score'))
+        except:
+            home_team_score = None
+        try:
+            away_team_score = int(self.request.get('away_team_score'))
+        except:
+            away_team_score = None           
+        if (table_get == 0 or home_team == 0 or away_team == 0 or home_team_score == None
+               or away_team_score == None):
+            #param or type wrong
+            #TODO: add a log message
+            self.redirect('/existingtable')
         else:
-            htm.games_lost = htm.games_lost + 1
-            pts = t.points_for_lose
-        htm.goals_for = htm.goals_for + int(self.request.get('home_team_score'))
-        htm.goals_against = htm.goals_against + int(self.request.get('away_team_score'))
-        htm.goal_difference = htm.goals_for - htm.goals_against
-        htm.points =  htm.points + int(pts)       
-        htm.put()
-        #update away team
-        atk = db.Key.from_path('Team', int(self.request.get('away_team')))
-        atm = db.get(atk)            
-        atm.games_played = atm.games_played + 1
-        pts = 0
-        if int(self.request.get('home_team_score')) < int(self.request.get('away_team_score')):
-            atm.games_won = atm.games_won + 1
-            pts = t.points_for_win  
-        elif int(self.request.get('home_team_score')) > 0 and (int(self.request.get('home_team_score')) == int(self.request.get('away_team_score'))):
-            atm.games_drawn = atm.games_drawn + 1
-            pts = t.points_for_score_draw
-        elif int(self.request.get('home_team_score')) == 0 and (int(self.request.get('home_team_score')) == int(self.request.get('away_team_score'))):
-            atm.games_drawn = atm.games_drawn + 1
-            pts = t.points_for_draw             
-        else:
-            atm.games_lost = atm.games_lost + 1
-            pts = t.points_for_lose
-        atm.goals_for = atm.goals_for + int(self.request.get('away_team_score'))
-        atm.goals_against = atm.goals_against + int(self.request.get('home_team_score'))
-        atm.goal_difference = atm.goals_for - atm.goals_against
-        atm.points =  atm.points + int(pts)       
-        atm.put()
-        #add result      
-        result = Result(table=t,
-            home_team_id=int(self.request.get('home_team')),
-            home_team_name=htm.name,
-            home_team_score=int(self.request.get('home_team_score')),
-            away_team_id=int(self.request.get('away_team')),
-            away_team_name=atm.name,
-            away_team_score=int(self.request.get('away_team_score')),
-            time_added=datetime.now()).put()
-        table_id = str(t.key().id())
-        table_object = 'result'
-        return_page = 'Results'       
-        object_action = 'added'
-        object_url = 'getresults'        
-        self.redirect('/displaymessage?table_id='+str(table_id)+'&table_object='+table_object+'&return_page='+return_page+'&object_action='+object_action+'&object_url='+object_url)
+            u = None
+            if users.get_current_user() == None:
+                if 'sportablesuser' in self.request.cookies:
+                    u = User.gql("WHERE tempusername = :1", self.request.cookies['sportablesuser'])
+            else:
+                u = User.gql("WHERE username = :1", users.get_current_user())
+            if u != None:
+                if u.count() == 1:
+                    #test if table and teams exist
+                    k = db.Key.from_path('Table', table_get)
+                    t = db.get(k)
+                    htk = db.Key.from_path('Team', home_team)
+                    htm = db.get(htk)
+                    atk = db.Key.from_path('Team', away_team)
+                    atm = db.get(atk)                    
+                    if not type(t) is NoneType and not type(htm) is NoneType and not type(atm) is NoneType:
+                        for o in u:
+                            #test if user is owner and check that home and away is isn't the same team
+                            if (o.key().id() == t.user.key().id() and
+                                        t.key().id() == htm.table.key().id() and t.key().id() == atm.table.key().id() and
+                                        htm.key().id() != atm.key().id()):
+                                #update home team            
+                                htm.games_played = htm.games_played + 1
+                                pts = 0
+                                if home_team_score > away_team_score:
+                                    htm.games_won = htm.games_won + 1
+                                    pts = t.points_for_win  
+                                elif home_team_score > 0 and (home_team_score == away_team_score):
+                                    htm.games_drawn = htm.games_drawn + 1
+                                    pts = t.points_for_score_draw
+                                elif home_team_score == 0 and (home_team_score == away_team_score):
+                                    htm.games_drawn = htm.games_drawn + 1
+                                    pts = t.points_for_draw             
+                                else:
+                                    htm.games_lost = htm.games_lost + 1
+                                    pts = t.points_for_lose
+                                htm.goals_for = htm.goals_for + home_team_score
+                                htm.goals_against = htm.goals_against + away_team_score
+                                htm.goal_difference = htm.goals_for - htm.goals_against
+                                htm.points =  htm.points + int(pts)       
+                                htm.put()
+                                #update away team            
+                                atm.games_played = atm.games_played + 1
+                                pts = 0
+                                if home_team_score < away_team_score:
+                                    atm.games_won = atm.games_won + 1
+                                    pts = t.points_for_win  
+                                elif home_team_score > 0 and (home_team_score == away_team_score):
+                                    atm.games_drawn = atm.games_drawn + 1
+                                    pts = t.points_for_score_draw
+                                elif home_team_score == 0 and (home_team_score == away_team_score):
+                                    atm.games_drawn = atm.games_drawn + 1
+                                    pts = t.points_for_draw             
+                                else:
+                                    atm.games_lost = atm.games_lost + 1
+                                    pts = t.points_for_lose
+                                atm.goals_for = atm.goals_for + away_team_score
+                                atm.goals_against = atm.goals_against + home_team_score
+                                atm.goal_difference = atm.goals_for - atm.goals_against
+                                atm.points =  atm.points + int(pts)       
+                                atm.put()
+                                #add result      
+                                result = Result(table=t,
+                                    home_team_id=home_team,
+                                    home_team_name=htm.name,
+                                    home_team_score=home_team_score,
+                                    away_team_id=away_team,
+                                    away_team_name=atm.name,
+                                    away_team_score=away_team_score,
+                                    time_added=datetime.now()).put()
+                                table_id = str(t.key().id())
+                                table_object = 'result'
+                                return_page = 'Results'       
+                                object_action = 'added'
+                                object_url = 'getresults'        
+                                self.redirect('/displaymessage?table_id='+
+                                              str(table_id)+'&table_object='+table_object+'&return_page='+
+                                              return_page+'&object_action='+object_action+'&object_url='+object_url)
+                            else:
+                                #attempt to add a result to another user's table or team
+                                #TODO: log what has happened
+                                self.redirect('/existingtable')
+                    else:
+                        #attempt to add result to a table or a team that doesn't exist
+                        #TODO: log what has happened
+                        self.redirect('/existingtable')
+                else:
+                    # user has a google or temp account but has no User entity
+                    #TODO: log what has happened
+                    self.redirect('/existingtable')
+            else:
+                #user has neither logged in with a google account or a set a cookie
+                #TODO: log what has happened
+                self.redirect('/existingtable')
 
 class GetResults(webapp.RequestHandler):
     def get(self):
