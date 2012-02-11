@@ -266,7 +266,23 @@ class CreateTable(webapp.RequestHandler):
     def get(self):
         tab = None
         u = None
-        table_name = self.request.get('name', default_value="Unnamed table")        
+        table_name = self.request.get('name', default_value="Unnamed table")
+        try:
+            points_for_win = int(self.request.get('points_for_win'))
+        except:
+            points_for_win = 3
+        try:
+            points_for_score_draw = int(self.request.get('points_for_score_draw'))
+        except:
+            points_for_score_draw = 1
+        try:
+            points_for_draw = int(self.request.get('points_for_draw'))
+        except:
+            points_for_draw = 1
+        try:
+            points_for_lose = int(self.request.get('points_for_lose'))
+        except:
+            points_for_lose = 0            
         if users.get_current_user() == None:
             if 'sportablesuser' in self.request.cookies:
                 u = User.gql("WHERE tempusername = :1", self.request.cookies['sportablesuser'])
@@ -277,10 +293,10 @@ class CreateTable(webapp.RequestHandler):
                 for p in u:
                     table = Table(user=p,
                         name=table_name,
-                        points_for_win=int(self.request.get('points_for_win')),
-                        points_for_draw=int(self.request.get('points_for_draw')),
-                        points_for_score_draw=int(self.request.get('points_for_score_draw')),
-                        points_for_lose=int(self.request.get('points_for_lose')),
+                        points_for_win=points_for_win,
+                        points_for_score_draw=points_for_score_draw,
+                        points_for_draw=points_for_draw,
+                        points_for_lose=points_for_lose,
                         viewable=True).put()
                     tab = table.id()
                 self.redirect('/getteams?table_name=' + str(tab))
@@ -299,7 +315,7 @@ class GetTable(webapp.RequestHandler):
         try:
             table_get = int(self.request.get('table_name'))
         except:
-            table_get = 0;
+            table_get = 0
         if(table_get == 0):
             #param or type wrong
             #TODO: add a log message
@@ -358,7 +374,7 @@ class DeleteTable(webapp.RequestHandler):
         try:
             table_delete = int(self.request.get('table_to_delete'))
         except:
-            table_delete = 0;
+            table_delete = 0
         if(table_delete == 0):
             #param or type wrong
             #TODO: add a log message
@@ -411,7 +427,7 @@ class AddTeam(webapp.RequestHandler):
         try:
             table_get = int(self.request.get('tbl_id'))
         except:
-            table_get = 0;
+            table_get = 0
         table_name = self.request.get('name', default_value="Unnamed team")            
         if(table_get == 0):
             #param or type wrong
@@ -475,7 +491,7 @@ class GetTeams(webapp.RequestHandler):
         try:
             table_get = int(self.request.get('table_name'))
         except:
-            table_get = 0;           
+            table_get = 0           
         if(table_get == 0):
             #param or type wrong
             #TODO: add a log message
@@ -802,7 +818,7 @@ class GetShare(webapp.RequestHandler):
         try:
             table_get = int(self.request.get('table_name'))
         except:
-            table_get = 0;
+            table_get = 0
         if(table_get == 0):
             #param or type wrong
             #TODO: add a log message
@@ -858,11 +874,11 @@ class MakeViewable(webapp.RequestHandler):
         try:
             table_get = int(self.request.get('tbl_id'))
         except:
-            table_get = 0;
+            table_get = 0
         try:
             viewable_get = int(self.request.get('viewable'))
         except:
-            viewable_get = None;            
+            viewable_get = None            
         if(table_get == 0):
             #param or type wrong
             #TODO: add a log message
