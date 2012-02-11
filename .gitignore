@@ -3,3 +3,4 @@
 /.settings/org.eclipse.php.core.prefs
 /.classpath
 *.pyc #no python complied binaries
+/app.yaml

@@ -110,7 +110,7 @@ class MainPage(webapp.RequestHandler):
                 }
             # 
             if apptemplates :
-                path = os.path.join(os.path.dirname(__file__), 'apptemplates/index.html')
+                path = os.path.join(os.path.dirname(__file__), 'index.html')
             else : 
                 path = os.path.join(os.path.dirname(__file__), 'index.html')
                 
@@ -160,7 +160,7 @@ class MainPage(webapp.RequestHandler):
                 'owner': is_table_owner
                 }
             if apptemplates :
-                path = os.path.join(os.path.dirname(__file__), 'apptemplates/viewer.html')
+                path = os.path.join(os.path.dirname(__file__), 'viewer.html')
             else :
                 path = os.path.join(os.path.dirname(__file__), 'viewer.html')
                 
@@ -236,7 +236,7 @@ class NewTable(webapp.RequestHandler):
             }
         
         if apptemplates :
-            path = os.path.join(os.path.dirname(__file__), 'apptemplates/new.html')
+            path = os.path.join(os.path.dirname(__file__), 'new.html')
         else :
             path = os.path.join(os.path.dirname(__file__), 'new.html')
             
@@ -312,7 +312,7 @@ class ExistingTable(webapp.RequestHandler):
             }
         
         if apptemplates :
-            path = os.path.join(os.path.dirname(__file__), 'apptemplates/existing.html')
+            path = os.path.join(os.path.dirname(__file__), 'existing.html')
         else :
             path = os.path.join(os.path.dirname(__file__), 'existing.html')
             
@@ -505,7 +505,7 @@ class GetTeams(webapp.RequestHandler):
         }
         
         if apptemplates :
-            path = os.path.join(os.path.dirname(__file__), 'apptemplates/teams.html')
+            path = os.path.join(os.path.dirname(__file__), 'teams.html')
         else:
             path = os.path.join(os.path.dirname(__file__), 'teams.html')
             
@@ -664,7 +664,7 @@ class GetResults(webapp.RequestHandler):
         }
         
         if apptemplates:
-            path = os.path.join(os.path.dirname(__file__), 'apptemplates/results.html')
+            path = os.path.join(os.path.dirname(__file__), 'results.html')
         else:
             path = os.path.join(os.path.dirname(__file__), 'results.html')
         self.response.out.write(template.render(path, template_values))
@@ -735,7 +735,7 @@ class GetShare(webapp.RequestHandler):
         }
         
         if apptemplates:
-            path = os.path.join(os.path.dirname(__file__), 'apptemplates/share.html')
+            path = os.path.join(os.path.dirname(__file__), 'share.html')
         else:
             path = os.path.join(os.path.dirname(__file__), 'share.html')
             
@@ -788,7 +788,7 @@ class DisplayMessage(webapp.RequestHandler):
         }      
         
         if apptemplates:  
-            path = os.path.join(os.path.dirname(__file__), 'apptemplates/displaymessage.html')
+            path = os.path.join(os.path.dirname(__file__), 'displaymessage.html')
         else:
             path = os.path.join(os.path.dirname(__file__), 'displaymessage.html')
             
