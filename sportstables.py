@@ -916,10 +916,10 @@ class DisplayMessage(webapp.RequestHandler):
             result_set = int(self.request.get('result_set'))
         except:
             result_set = 0
-        table_object = str(self.request.get('table_object', default_value="message"))            
-        return_page = str(self.request.get('return_page', default_value="Your tables"))
-        object_action = str(self.request.get('object_action', default_value="displayed"))
-        object_url = str(self.request.get('object_url', default_value="existingtable"))      
+        table_object = self.request.get('table_object', default_value="message")            
+        return_page = self.request.get('return_page', default_value="Your tables")
+        object_action = self.request.get('object_action', default_value="displayed")
+        object_url = self.request.get('object_url', default_value="existingtable")      
         template_values = {
             'table_id': table_id,
 	    'table_object': table_object,
