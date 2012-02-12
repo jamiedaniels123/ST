@@ -739,73 +739,88 @@ class AddResult(webapp.RequestHandler):
 
 class GetResults(webapp.RequestHandler):
     def get(self):
-        usercookie = None
-        login_cookie = Cookie.BaseCookie()
-        if 'sportablesuser' in self.request.cookies:
-            usercookie = self.request.cookies['sportablesuser']
-            login_cookie['sportablesuser'] = usercookie
-            login_cookie['sportablesuser']["expires"] = COOKIE_TIME
-        k = db.Key.from_path('Table', int(self.request.get('table_name')))
-        tb = db.get(k)
-        tms = Team().all()
-        tms.filter('table = ', k)
-        tms.order('-points')
-        tms.order('-goal_difference')
-        tms.order('-goals_for')
-        tms.order('name')
-        if(tms.count()<2):
-            disable = 1
-        else:
-            disable = 0
-        if(tms.count()<1):
-            disable2 = 1
-        else:
-            disable2 = 0
+        #test param exists and is right type
         try:
             result_set = int(self.request.get('result_set'))
         except:
-            result_set = 0           
-        #new test part
-        rs = Result().all()
-        rs.filter('table = ', k)
-        rs_away = Result().all()
-        rs_away.filter('table = ', k)
-        hrl = []
-        if int(result_set) != 0:
-            rs.filter('home_team_id = ', result_set)
-            rs_away.filter('away_team_id = ', result_set)
-            for r in rs:
-                hrl.append(int(r.key().id()))
-            for r in rs_away:
-                hrl.append(int(r.key().id()))
-            rs = Result.get_by_id(hrl)
-            rs.sort(key=lambda result: result.time_added)        
-        #new test end            
-        url = './'
-        url_linktext = 'Home'
-        server_name = os.environ['SERVER_NAME']
-        if (server_name == 'localhost'):
-            server_port = ':'+os.environ['SERVER_PORT']
+            result_set = 0      
+        try:
+            table_get = int(self.request.get('table_name'))
+        except:
+            table_get = 0           
+        if(table_get == 0):
+            #param or type wrong
+            #TODO: add a log message
+            self.redirect('/existingtable')
         else:
-            server_port = ''
-        viewable_url  = server_name+server_port+'?table='+str(self.request.get('table_name'))
-        score_options = range(300)
-        template_values = {
-	    'tabledata': tb,
-	    'teamsdata': tms,
-            'result_set_data': result_set,
-	    'resultsdata': rs,            
-	    'url': url,
-	    'url_linktext': url_linktext,
-	    'disable': disable,
-            'disable2': disable2,
-            'viewable_url': viewable_url,
-            'score_options': score_options
-        }
-        path = os.path.join(os.path.dirname(__file__), 'results.html')
-        self.response.out.write(template.render(path, template_values))
-        for morsel in login_cookie.values():
-            self.response.headers.add_header('Set-Cookie',morsel.OutputString(None))
+            u = None
+            if users.get_current_user() == None:
+                if 'sportablesuser' in self.request.cookies:
+                    u = User.gql("WHERE tempusername = :1", self.request.cookies['sportablesuser'])
+            else:
+                u = User.gql("WHERE username = :1", users.get_current_user())
+            if u != None:
+                if u.count() == 1:
+                    #test if table exists
+                    k = db.Key.from_path('Table', table_get)
+                    tb = db.get(k)
+                    if not type(tb) is NoneType:
+                        for o in u:
+                            #test if user is owner
+                            if o.key().id() == tb.user.key().id():
+                                tms = Team().all()
+                                tms.filter('table = ', k)
+                                tms.order('-points')
+                                tms.order('-goal_difference')
+                                tms.order('-goals_for')
+                                tms.order('name')
+                                if(tms.count()<2):
+                                    disable = 1
+                                else:
+                                    disable = 0           
+                                #new test part
+                                rs = Result().all()
+                                rs.filter('table = ', k)
+                                rs_away = Result().all()
+                                rs_away.filter('table = ', k)
+                                hrl = []
+                                if int(result_set) != 0:
+                                    rs.filter('home_team_id = ', result_set)
+                                    rs_away.filter('away_team_id = ', result_set)
+                                    for r in rs:
+                                        hrl.append(int(r.key().id()))
+                                    for r in rs_away:
+                                        hrl.append(int(r.key().id()))
+                                    rs = Result.get_by_id(hrl)
+                                    rs.sort(key=lambda result: result.time_added)        
+                                #new test end
+                                score_options = range(300)
+                                template_values = {
+                                    'tabledata': tb,
+                                    'teamsdata': tms,
+                                    'result_set_data': result_set,
+                                    'resultsdata': rs,
+                                    'disable': disable,
+                                    'score_options': score_options
+                                }
+                                path = os.path.join(os.path.dirname(__file__), 'results.html')
+                                self.response.out.write(template.render(path, template_values))
+                            else:
+                                #attempt to get teams from another user's table
+                                #TODO: log what has happened
+                                self.redirect('/existingtable')
+                    else:
+                        #attempt to get teams from a table that doesn't exist
+                        #TODO: log what has happened
+                        self.redirect('/existingtable')
+                else:
+                    # user has a google or temp account but has no User entity
+                    #TODO: log what has happened
+                    self.redirect('/existingtable')
+            else:
+                #user has neither logged in with a google account or a set a cookie
+                #TODO: log what has happened
+                self.redirect('/existingtable')
             
 class DeleteResult(webapp.RequestHandler):
     def post(self):
