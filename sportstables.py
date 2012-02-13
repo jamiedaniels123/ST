@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
@@ -301,12 +302,10 @@ class CreateTable(webapp.RequestHandler):
                     tab = table.id()
                 self.redirect('/getteams?table_name=' + str(tab))
             else:
-                # user has a google or temp account but has no User entity
-                #TODO: log what has happened
+                logging.warning("user has a google or temp account but has no User entity")
                 self.redirect('/')
         else:
-            #user has neither logged in with a google account or a set a cookie
-            #TODO: log what has happened
+            logging.warning("user has neither logged in with a google account or a set a cookie")
             self.redirect('/')                
 
 class GetTable(webapp.RequestHandler):
@@ -317,8 +316,7 @@ class GetTable(webapp.RequestHandler):
         except:
             table_get = 0
         if(table_get == 0):
-            #param or type wrong
-            #TODO: add a log message
+            logging.warning("param or type wrong")
             self.redirect('/existingtable')
         else:
             u = None
@@ -352,20 +350,16 @@ class GetTable(webapp.RequestHandler):
                                 path = os.path.join(os.path.dirname(__file__), 'table.html')
                                 self.response.out.write(template.render(path, template_values))
                             else:
-                                #attempt to get another user's table
-                                #TODO: log what has happened
+                                logging.warning("attempt to get another user's table")
                                 self.redirect('/existingtable')
-                    else:
-                        #attempt to get a table that doesn't exist
-                        #TODO: log what has happened
+                    else:                        
+                        logging.warning("attempt to get a table that doesn't exist")
                         self.redirect('/existingtable')
                 else:
-                    # user has a google or temp account but has no User entity
-                    #TODO: log what has happened
+                    logging.warning("user has a google or temp account but has no User entity")
                     self.redirect('/existingtable')
             else:
-                #user has neither logged in with a google account or a set a cookie
-                #TODO: log what has happened
+                logging.warning("user has neither logged in with a google account or a set a cookie")
                 self.redirect('/existingtable')        
 
 class DeleteTable(webapp.RequestHandler):
@@ -376,8 +370,7 @@ class DeleteTable(webapp.RequestHandler):
         except:
             table_delete = 0
         if(table_delete == 0):
-            #param or type wrong
-            #TODO: add a log message
+            logging.warning("param or type wrong")
             self.redirect('/existingtable')
         else:
             u = None
@@ -405,20 +398,16 @@ class DeleteTable(webapp.RequestHandler):
                                               +str(table_id)+'&table_object='+table_object+'&return_page='
                                               +return_page+'&object_action='+object_action+'&object_url='+object_url)
                             else:
-                                #attempt to delete another user's table
-                                #TODO: log what has happened
+                                logging.warning("attempt to delete another user's table")
                                 self.redirect('/existingtable')
                     else:
-                        #attempt to delete a table that doesn't exist
-                        #TODO: log what has happened
+                        logging.warning("attempt to delete a table that doesn't exist")
                         self.redirect('/existingtable')
                 else:
-                    # user has a google or temp account but has no User entity
-                    #TODO: log what has happened
+                    logging.warning("user has a google or temp account but has no User entity")
                     self.redirect('/existingtable')
             else:
-                #user has neither logged in with a google account or a set a cookie
-                #TODO: log what has happened
+                logging.warning("user has neither logged in with a google account or a set a cookie")
                 self.redirect('/existingtable')
 
 class AddTeam(webapp.RequestHandler):
@@ -430,8 +419,7 @@ class AddTeam(webapp.RequestHandler):
             table_get = 0
         table_name = self.request.get('name', default_value="Unnamed team")            
         if(table_get == 0):
-            #param or type wrong
-            #TODO: add a log message
+            logging.warning("param or type wrong")
             self.redirect('/existingtable')
         else:
             u = None
@@ -469,20 +457,16 @@ class AddTeam(webapp.RequestHandler):
                                           '&table_object='+table_object+'&return_page='+
                                           return_page+'&object_action='+object_action+'&object_url='+object_url)
                             else:
-                                #attempt to add a team to another user's table
-                                #TODO: log what has happened
+                                logging.warning("attempt to add a team to another user's table")
                                 self.redirect('/existingtable')
                     else:
-                        #attempt to add team to a table that doesn't exist
-                        #TODO: log what has happened
+                        logging.warning("attempt to add team to a table that doesn't exist")
                         self.redirect('/existingtable')
                 else:
-                    # user has a google or temp account but has no User entity
-                    #TODO: log what has happened
+                    logging.warning("user has a google or temp account but has no User entity")
                     self.redirect('/existingtable')
             else:
-                #user has neither logged in with a google account or a set a cookie
-                #TODO: log what has happened
+                logging.warning("user has neither logged in with a google account or a set a cookie")
                 self.redirect('/existingtable')
         
 class GetTeams(webapp.RequestHandler):
@@ -493,8 +477,7 @@ class GetTeams(webapp.RequestHandler):
         except:
             table_get = 0           
         if(table_get == 0):
-            #param or type wrong
-            #TODO: add a log message
+            logging.warning("param or type wrong")
             self.redirect('/existingtable')
         else:
             u = None
@@ -535,20 +518,16 @@ class GetTeams(webapp.RequestHandler):
                                 path = os.path.join(os.path.dirname(__file__), 'teams.html')
                                 self.response.out.write(template.render(path, template_values))
                             else:
-                                #attempt to get teams from another user's table
-                                #TODO: log what has happened
+                                logging.warning("attempt to get teams from another user's table")
                                 self.redirect('/existingtable')
                     else:
-                        #attempt to get teams from a table that doesn't exist
-                        #TODO: log what has happened
+                        logging.warning("attempt to get teams from a table that doesn't exist")
                         self.redirect('/existingtable')
                 else:
-                    # user has a google or temp account but has no User entity
-                    #TODO: log what has happened
+                    logging.warning("user has a google or temp account but has no User entity")
                     self.redirect('/existingtable')
             else:
-                #user has neither logged in with a google account or a set a cookie
-                #TODO: log what has happened
+                logging.warning("user has neither logged in with a google account or a set a cookie")
                 self.redirect('/existingtable')        
 
 class DeleteTeam(webapp.RequestHandler):
@@ -563,8 +542,7 @@ class DeleteTeam(webapp.RequestHandler):
         except:
             team_delete = 0            
         if(table_delete == 0 or team_delete == 0):
-            #param or type wrong
-            #TODO: add a log message
+            logging.warning("param or type wrong")
             self.redirect('/existingtable')
         else:            
             u = None
@@ -597,20 +575,16 @@ class DeleteTeam(webapp.RequestHandler):
                                               table_object+'&return_page='+
                                               return_page+'&object_action='+object_action+'&object_url='+object_url)
                             else:
-                                #attempt to delete another user's team
-                                #TODO: log what has happened
+                                logging.warning("attempt to delete another user's team")
                                 self.redirect('/existingtable')
                     else:
-                        #attempt to delete a team that doesn't exist (or its table doesn't exist)
-                        #TODO: log what has happened
+                        logging.warning("attempt to delete a team that doesn't exist (or its table doesn't exist)")
                         self.redirect('/existingtable')
                 else:
-                    # user has a google or temp account but has no User entity
-                    #TODO: log what has happened
+                    logging.warning("user has a google or temp account but has no User entity")
                     self.redirect('/existingtable')
             else:
-                #user has neither logged in with a google account or a set a cookie
-                #TODO: log what has happened
+                logging.warning("user has neither logged in with a google account or a set a cookie")
                 self.redirect('/existingtable')        
 
 class AddResult(webapp.RequestHandler):
@@ -638,8 +612,7 @@ class AddResult(webapp.RequestHandler):
             away_team_score = None           
         if (table_get == 0 or home_team == 0 or away_team == 0 or home_team_score == None
                or away_team_score == None):
-            #param or type wrong
-            #TODO: add a log message
+            logging.warning("param or type wrong")
             self.redirect('/existingtable')
         else:
             u = None
@@ -721,20 +694,16 @@ class AddResult(webapp.RequestHandler):
                                               str(table_id)+'&table_object='+table_object+'&return_page='+
                                               return_page+'&object_action='+object_action+'&object_url='+object_url)
                             else:
-                                #attempt to add a result to another user's table or team
-                                #TODO: log what has happened
+                                logging.warning("attempt to add a result to another user's table or team")
                                 self.redirect('/existingtable')
                     else:
-                        #attempt to add result to a table or a team that doesn't exist
-                        #TODO: log what has happened
+                        logging.warning("attempt to add result to a table or a team that doesn't exist")
                         self.redirect('/existingtable')
                 else:
-                    # user has a google or temp account but has no User entity
-                    #TODO: log what has happened
+                    logging.warning("user has a google or temp account but has no User entity")
                     self.redirect('/existingtable')
             else:
-                #user has neither logged in with a google account or a set a cookie
-                #TODO: log what has happened
+                logging.warning("user has neither logged in with a google account or a set a cookie")
                 self.redirect('/existingtable')
 
 class GetResults(webapp.RequestHandler):
@@ -749,8 +718,7 @@ class GetResults(webapp.RequestHandler):
         except:
             table_get = 0           
         if(table_get == 0):
-            #param or type wrong
-            #TODO: add a log message
+            logging.warning("param or type wrong")
             self.redirect('/existingtable')
         else:
             u = None
@@ -806,20 +774,16 @@ class GetResults(webapp.RequestHandler):
                                 path = os.path.join(os.path.dirname(__file__), 'results.html')
                                 self.response.out.write(template.render(path, template_values))
                             else:
-                                #attempt to get teams from another user's table
-                                #TODO: log what has happened
+                                logging.warning("attempt to get teams from another user's table")
                                 self.redirect('/existingtable')
                     else:
-                        #attempt to get teams from a table that doesn't exist
-                        #TODO: log what has happened
+                        logging.warning("attempt to get teams from a table that doesn't exist")
                         self.redirect('/existingtable')
                 else:
-                    # user has a google or temp account but has no User entity
-                    #TODO: log what has happened
+                    logging.warning("user has a google or temp account but has no User entity")
                     self.redirect('/existingtable')
             else:
-                #user has neither logged in with a google account or a set a cookie
-                #TODO: log what has happened
+                logging.warning("user has neither logged in with a google account or a set a cookie")
                 self.redirect('/existingtable')
             
 class DeleteResult(webapp.RequestHandler):
@@ -838,8 +802,7 @@ class DeleteResult(webapp.RequestHandler):
         except:
             result_set = 0            
         if(table_delete == 0 or result_delete == 0):
-            #param or type wrong
-            #TODO: add a log message
+            logging.warning("param or type wrong")
             self.redirect('/existingtable')
         else:            
             u = None
@@ -871,20 +834,16 @@ class DeleteResult(webapp.RequestHandler):
                                           return_page+'&object_action='+object_action+'&object_url='+
                                           object_url+'&result_set='+str(result_set))
                             else:
-                                #attempt to delete another user's team
-                                #TODO: log what has happened
+                                logging.warning("attempt to delete another user's team")
                                 self.redirect('/existingtable')
                     else:
-                        #attempt to delete a team that doesn't exist (or its table doesn't exist)
-                        #TODO: log what has happened
+                        logging.warning("attempt to delete a team that doesn't exist (or its table doesn't exist)")
                         self.redirect('/existingtable')
                 else:
-                    # user has a google or temp account but has no User entity
-                    #TODO: log what has happened
+                    logging.warning("user has a google or temp account but has no User entity")
                     self.redirect('/existingtable')
             else:
-                #user has neither logged in with a google account or a set a cookie
-                #TODO: log what has happened
+                logging.warning("user has neither logged in with a google account or a set a cookie")
                 self.redirect('/existingtable')
 
 class GetShare(webapp.RequestHandler):
@@ -895,8 +854,7 @@ class GetShare(webapp.RequestHandler):
         except:
             table_get = 0
         if(table_get == 0):
-            #param or type wrong
-            #TODO: add a log message
+            logging.warning("param or type wrong")
             self.redirect('/existingtable')
         else:
             u = None
@@ -927,20 +885,16 @@ class GetShare(webapp.RequestHandler):
                                 path = os.path.join(os.path.dirname(__file__), 'share.html')
                                 self.response.out.write(template.render(path, template_values))
                             else:
-                                #attempt to get another user's table
-                                #TODO: log what has happened
+                                logging.warning("attempt to get another user's table")
                                 self.redirect('/existingtable')
                     else:
-                        #attempt to get a table that doesn't exist
-                        #TODO: log what has happened
+                        logging.warning("attempt to get a table that doesn't exist")
                         self.redirect('/existingtable')
                 else:
-                    # user has a google or temp account but has no User entity
-                    #TODO: log what has happened
+                    logging.warning("user has a google or temp account but has no User entity")
                     self.redirect('/existingtable')
             else:
-                #user has neither logged in with a google account or a set a cookie
-                #TODO: log what has happened
+                logging.warning("user has neither logged in with a google account or a set a cookie")
                 self.redirect('/existingtable')       
 
 class MakeViewable(webapp.RequestHandler):
@@ -955,8 +909,7 @@ class MakeViewable(webapp.RequestHandler):
         except:
             viewable_get = None            
         if(table_get == 0):
-            #param or type wrong
-            #TODO: add a log message
+            logging.warning("param or type wrong")
             self.redirect('/existingtable')
         else:
             u = None
@@ -980,20 +933,16 @@ class MakeViewable(webapp.RequestHandler):
                                     tb.put()
                                 self.redirect('/getshare?table_name=' + str(table_get))
                             else:
-                                #attempt to get another user's table
-                                #TODO: log what has happened
+                                logging.warning("attempt to get another user's table")
                                 self.redirect('/existingtable')
                     else:
-                        #attempt to get a table that doesn't exist
-                        #TODO: log what has happened
+                        logging.warning("attempt to get a table that doesn't exist")
                         self.redirect('/existingtable')
                 else:
-                    # user has a google or temp account but has no User entity
-                    #TODO: log what has happened
+                    logging.warning("user has a google or temp account but has no User entity")
                     self.redirect('/existingtable')
             else:
-                #user has neither logged in with a google account or a set a cookie
-                #TODO: log what has happened
+                logging.warning("user has neither logged in with a google account or a set a cookie")
                 self.redirect('/existingtable')
 
 class DisplayMessage(webapp.RequestHandler):
