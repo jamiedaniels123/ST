@@ -16,6 +16,8 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext import db
 from dbmodel import User, Table, Team, Result
 from datetime import datetime
+import urllib
+import time
 
 COOKIE_TIME = 315360000
  
@@ -25,7 +27,27 @@ class MainPage(webapp.RequestHandler):
             table_id = int(self.request.get('table'))
         except:
             table_id = 0
+            
         accounttype_id = 1 #once used to set temp account off a button
+        
+        # Set var default to indicate that user is not using the app
+        notapp=1
+        
+        # get the query string      
+        startingurl = self.request.uri      
+        param = urllib.urlencode({startingurl:1})
+        urlqs = startingurl.endswith('&') and (startingurl + param) or (startingurl + '&' + param)
+  
+        # when appversion is present set a cookie that can be picked up by all the other pages and set template var to 1
+        if 'appversion' in urlqs:
+            # is the app so set the cookie to remember that
+            print 'Set-Cookie: sportablesapp=1';
+            notapp=0 
+                
+        # check cookie again user may have returned to homepage after navigating around and lost the param from the querystring  
+        if 'sportablesapp' in self.request.cookies:
+            notapp=0    
+        
         if(table_id == 0):
             u = None
             tempu = None
@@ -78,10 +100,12 @@ class MainPage(webapp.RequestHandler):
                     login_cookie['sportablesuser']["expires"] = COOKIE_TIME
                 url = users.create_login_url(self.request.uri)
                 url_linktext = 'Sign in'  
+             
             template_values = {
                 'tablecount': tablecount,
                 'url': url,
-                'url_linktext': url_linktext
+                'url_linktext': url_linktext ,
+                'notapp' : notapp              
                 }
             path = os.path.join(os.path.dirname(__file__), 'index.html')
             self.response.out.write(template.render(path, template_values))
@@ -184,6 +208,11 @@ class NewTable(webapp.RequestHandler):
                 login_cookie['sportablesuser']["expires"] = COOKIE_TIME
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Sign in'  
+            
+        notapp=1
+        if 'sportablesapp' in self.request.cookies:
+            notapp=0
+            
         template_values = {
             'userdata': u,
             'url': url,
@@ -191,7 +220,8 @@ class NewTable(webapp.RequestHandler):
             'disable': disable,
             'administrator': is_admin,
             'logged_in': is_logged_in,
-            'temp_account': is_temp_account
+            'temp_account': is_temp_account,
+            'notapp': notapp
             }
         path = os.path.join(os.path.dirname(__file__), 'new.html')
         self.response.out.write(template.render(path, template_values))
@@ -249,6 +279,11 @@ class ExistingTable(webapp.RequestHandler):
                 login_cookie['sportablesuser']["expires"] = COOKIE_TIME
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Sign in'  
+            
+        notapp=1
+        if 'sportablesapp' in self.request.cookies:
+            notapp=0
+                 
         template_values = {
             'userdata': u,
             'url': url,
@@ -256,7 +291,8 @@ class ExistingTable(webapp.RequestHandler):
             'disable': disable,
             'administrator': is_admin,
             'logged_in': is_logged_in,
-            'temp_account': is_temp_account
+            'temp_account': is_temp_account,
+            'notapp':notapp
             }
         path = os.path.join(os.path.dirname(__file__), 'existing.html')
         self.response.out.write(template.render(path, template_values))
@@ -283,7 +319,7 @@ class CreateTable(webapp.RequestHandler):
         try:
             points_for_lose = int(self.request.get('points_for_lose'))
         except:
-            points_for_lose = 0            
+            points_for_lose = 0
         if users.get_current_user() == None:
             if 'sportablesuser' in self.request.cookies:
                 u = User.gql("WHERE tempusername = :1", self.request.cookies['sportablesuser'])
@@ -311,6 +347,9 @@ class CreateTable(webapp.RequestHandler):
 class GetTable(webapp.RequestHandler):
     def get(self):
         #test param exists and is right type
+        notapp=1
+        if 'sportablesapp' in self.request.cookies:
+            notapp=0
         try:
             table_get = int(self.request.get('table_name'))
         except:
@@ -343,6 +382,7 @@ class GetTable(webapp.RequestHandler):
                                 rs = Result().all()
                                 rs.filter('table = ', k)
                                 template_values = {
+                                    'notapp': notapp,
                                     'tabledata': tb,
                                     'teamsdata': tms,
                                     'resultsdata': rs
@@ -360,7 +400,7 @@ class GetTable(webapp.RequestHandler):
                     self.redirect('/existingtable')
             else:
                 logging.warning("user has neither logged in with a google account or a set a cookie")
-                self.redirect('/existingtable')        
+                self.redirect('/existingtable')
 
 class DeleteTable(webapp.RequestHandler):
     def get(self):
@@ -472,6 +512,9 @@ class AddTeam(webapp.RequestHandler):
 class GetTeams(webapp.RequestHandler):
     def get(self):
         #test param exists and is right type
+        notapp=1
+        if 'sportablesapp' in self.request.cookies:
+            notapp=0
         try:
             table_get = int(self.request.get('table_name'))
         except:
@@ -510,6 +553,7 @@ class GetTeams(webapp.RequestHandler):
                                 else:
                                     disable2 = 0
                                 template_values = {
+                                    'notapp': notapp,
                                     'tabledata': tb,
                                     'teamsdata': tms,
                                     'disable': disable,
@@ -528,7 +572,7 @@ class GetTeams(webapp.RequestHandler):
                     self.redirect('/existingtable')
             else:
                 logging.warning("user has neither logged in with a google account or a set a cookie")
-                self.redirect('/existingtable')        
+                self.redirect('/existingtable')
 
 class DeleteTeam(webapp.RequestHandler):
     def post(self):     
@@ -709,6 +753,9 @@ class AddResult(webapp.RequestHandler):
 class GetResults(webapp.RequestHandler):
     def get(self):
         #test param exists and is right type
+        notapp=1
+        if 'sportablesapp' in self.request.cookies:
+            notapp=0
         try:
             result_set = int(self.request.get('result_set'))
         except:
@@ -764,6 +811,7 @@ class GetResults(webapp.RequestHandler):
                                 #new test end
                                 score_options = range(300)
                                 template_values = {
+                                    'notapp': notapp,
                                     'tabledata': tb,
                                     'teamsdata': tms,
                                     'result_set_data': result_set,
@@ -849,6 +897,9 @@ class DeleteResult(webapp.RequestHandler):
 class GetShare(webapp.RequestHandler):
     def get(self):
         #test param exists and is right type
+        notapp=1
+        if 'sportablesapp' in self.request.cookies:
+            notapp=0
         try:
             table_get = int(self.request.get('table_name'))
         except:
@@ -879,6 +930,7 @@ class GetShare(webapp.RequestHandler):
                                     server_port = ''
                                 viewable_url  = server_name+server_port+'?table='+str(table_get)
                                 template_values = {
+                                    'notapp': notapp,
                                     'tabledata': tb,
                                     'viewable_url': viewable_url
                                 }
@@ -895,7 +947,7 @@ class GetShare(webapp.RequestHandler):
                     self.redirect('/existingtable')
             else:
                 logging.warning("user has neither logged in with a google account or a set a cookie")
-                self.redirect('/existingtable')       
+                self.redirect('/existingtable')
 
 class MakeViewable(webapp.RequestHandler):
     def get(self):
