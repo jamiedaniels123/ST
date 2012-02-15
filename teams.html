@@ -47,8 +47,10 @@
 	<h3>Add a team</h3>
     <form action="/addteam" method="post" name="add_team_form">
       <input type="hidden" name="tbl_id" value="{{tabledata.key.id}}"/>
-      <label for="name_ID">Enter team name</label>
+      <div data-role="fieldcontain">
+      <label for="name_ID">Name of team</label>
       <input onFocus="return clearDefaultText('add_team_form', 'name_ID', 'Enter a name here')" type="text" name="name" id="name_ID" value="Enter a name here"></input>
+      </div>
       <input type="submit" value="Add new team">
     </form>
     <h3>Delete a team</h3>
