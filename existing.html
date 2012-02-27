@@ -43,7 +43,7 @@
 	{% endif %}
     {% for g in userdata %}
 	<h3>View a table</h3>
-      <form action="/gettable" method="get" data-transition="slidedown">
+      <form action="/gettable" method="get" data-transition="slidedown" data-ajax="false">
       <div data-role="fieldcontain">
         <label for="table_name_ID">Select a table to view</label>
         <select name="table_name" id="table_name_ID" {% if disable %}disabled="disabled"{% endif %}>
