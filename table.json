@@ -10,15 +10,15 @@
             {% for t in teamsdata%}
                 {
                     "pos": {{forloop.counter}},
-        	        "name":	"{{t.name|capfirst}}",
-       	 	        "played": {{t.games_played}},
-        	        "won": {{t.games_won}},
-        	        "drawn": {{t.games_drawn}},
-        	        "lost":	{{t.games_lost}},
-        	        "goalsfor":	{{t.goals_for}},
-       		        "goalsagainst": {{t.goals_against}},
-       		        "goaldifference": {{t.goal_difference}},
-        	        "points": {{t.points}}
+        	    "name":	"{{t.name|capfirst}}",
+       	 	    "played": {{t.games_played}},
+        	    "won": {{t.games_won}},
+        	    "drawn": {{t.games_drawn}},
+        	    "lost":	{{t.games_lost}},
+        	    "goalsfor":	{{t.goals_for}},
+       		    "goalsagainst": {{t.goals_against}},
+       		    "goaldifference": {{t.goal_difference}},
+        	    "points": {{t.points}}
         	 }
         	 {% if not forloop.last %},{% endif %}
             {% endfor %}
@@ -26,11 +26,11 @@
     },
 
     "results": [
-        {% for r in resultssdata%}
+        {% for r in resultsdata%}
             {
                 "hometeamname": "{{r.home_team_name|capfirst}}",
                 "hometeamscore": {{r.home_team_score}},
-                "awayteamname": {{r.away_team_name|capfirst}},
+                "awayteamname": "{{r.away_team_name|capfirst}}",
                 "awayteamscore": {{r.away_team_score}}
             }
             {% if not forloop.last %},{% endif %}
