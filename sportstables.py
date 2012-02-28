@@ -18,6 +18,7 @@ from dbmodel import User, Table, Team, Result
 from datetime import datetime
 import urllib
 import time
+from django.utils import simplejson
 
 COOKIE_TIME = 315360000
  
@@ -387,8 +388,9 @@ class GetTable(webapp.RequestHandler):
                                     'teamsdata': tms,
                                     'resultsdata': rs
                                 }
-                                path = os.path.join(os.path.dirname(__file__), 'table.html')
-                                self.response.out.write(template.render(path, template_values))
+                                #not sure if this header is needed as it works ok without
+                                self.response.headers['Content-Type'] = 'application/json'
+                                self.response.out.write(simplejson.dumps(['foo', {'bar': ('baz', None, 1.0, 2)}]))
                             else:
                                 logging.warning("attempt to get another user's table")
                                 self.redirect('/existingtable')
