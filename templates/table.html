@@ -20,15 +20,14 @@
     </script>
     <script src="http://localhost:8080/gettable?table_name=47"></script>
     <script type="text/javascript">
+      //get the data from the script tag above, held in a json object called 'gettable'
+      console.log(gettable);
 $.getJSON('http://localhost:8080/gettable?table_name=47', function(data) {
 	  var items = [];
-	  console.log(data);
-	  alert('out');
 	  $.each(data, function(key, val) {
 
 	  });
 });
-        //alert(data.notapp);
     </script>
     <title>Make sports tables with SportsTables! the league table generator</title>
   </head>

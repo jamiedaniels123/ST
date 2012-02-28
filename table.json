@@ -1,4 +1,4 @@
-{
+var gettable = {
     "page": {
         "notapp": {{notapp}}
     },
@@ -36,4 +36,4 @@
             {% if not forloop.last %},{% endif %}
         {% endfor %}
     ]
-}
+};

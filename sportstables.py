@@ -390,8 +390,6 @@ class GetTable(webapp.RequestHandler):
                                 }
                                 path = os.path.join(os.path.dirname(__file__), 'table.json')
                                 self.response.out.write(template.render(path, template_values))
-                                #self.response.headers['Content-Type'] = 'application/json'
-                                #self.response.out.write(simplejson.dumps(tb))
                             else:
                                 logging.warning("attempt to get another user's table")
                                 self.redirect('/existingtable')
