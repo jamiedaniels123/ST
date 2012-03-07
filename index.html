@@ -71,12 +71,33 @@
      so you'll need a Google Account to sign in with.</p>
      </div>
 	</div><!-- /content -->
+	
 	<div data-role="footer" class="footer-docs">
-			{% if notapp %}
-	  			<a style="float:left;" href="http://market.android.com/details?id=sportstables.com"><img src="http://www.android.com/images/brand/45_avail_market_logo2.png" alt="Available in Android Market" /></a>
-			{% endif %}
-			<p align="right">&copy; 2011 SportsTables &nbsp;</p>
-	</div><!-- /footer -->
+		{% if notapp %} <a style="float: left;"
+			href="http://market.android.com/details?id=sportstables.com"><img
+			src="http://www.android.com/images/brand/45_avail_market_logo2.png"
+			alt="Available in Android Market" /></a> 
+		{% endif %} 
+		<div style="float:left;padding:5px;">
+		<a href="https://twitter.com/sportstables" class="twitter-follow-button"
+			data-show-count="false" data-size="large">Follow @sportstables</a>
+		</div>
+		<script>
+			!function(d, s, id) {
+				var js, fjs = d.getElementsByTagName(s)[0];
+				if (!d.getElementById(id)) {
+					js = d.createElement(s);
+					js.id = id;
+					js.src = "//platform.twitter.com/widgets.js";
+					fjs.parentNode.insertBefore(js, fjs);
+				}
+			}(document, "script", "twitter-wjs");
+		</script>
+	
+		<p align="right">&copy; 2012 SportsTables &nbsp;</p>
+	</div>
+	<!-- /footer -->
+
 </div><!-- /page -->
   </body>
 </html>
