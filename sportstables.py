@@ -99,13 +99,19 @@ class MainPage(webapp.RequestHandler):
                         u.fetch(limit=1)
                     login_cookie['sportablesuser']["expires"] = COOKIE_TIME
                 url = users.create_login_url(self.request.uri)
-                url_linktext = 'Sign in'  
-             
+                url_linktext = 'Sign in'
+                
+            #find out the languages the requesting browser accepts
+            al=self.request.headers.get('Accept-Language')
+            accepted_languages = helperfunctions.parse_accept_language(al)
+            language_strings = helperfunctions.get_messages(accepted_languages)
+                
             template_values = {
                 'tablecount': tablecount,
                 'url': url,
                 'url_linktext': url_linktext ,
-                'notapp' : notapp              
+                'notapp' : notapp,
+                'language_strings': language_strings
                 }
             path = os.path.join(os.path.dirname(__file__), 'index.html')
             self.response.out.write(template.render(path, template_values))

@@ -1,7 +1,10 @@
 import sys
+import re
 from google.appengine.ext import db
 from dbmodel import Table, Team, Result
 from types import NoneType
+import translate
+import logging
 
 def deletetable(tablek):
     tb = db.get(tablek)
@@ -85,7 +88,24 @@ def deleteresult(rsk, k):
     atm.put()
     #delete result        
     rs.delete()
-    
+
+def parse_accept_language(accept_language):
+    if not accept_language: return []
+    ll=[ v.strip().split(';') for v in accept_language.split(',') ]
+    ll=[ len(l)==1 and l.append(1.0) or l for l in ll]
+    ll=[ [l[0],float(re.sub('q\s*=\s*','',str(l[1])))] for l in ll]    
+    ll=[ l[0] for l in sorted(ll,lambda l1,l2: l1[1] > l2[1]) ] 
+    ll=[ re.sub('-','_',l).lower() for l in ll ]
+    return ll
+
+def get_messages(languages=[]):
+    msgs=translate.en
+    for lang in languages:
+        if hasattr(translate,lang):
+            msgs=getattr(translate,lang)            
+            logging.debug('languages='+str(languages)+', using '+str(lang))
+            break
+    return msgs
 
     
     
