@@ -9,6 +9,9 @@ handlers:
   
 - url: /images
   static_dir: images
+
+- url: /static
+  static_dir: static
   
 - url: /javascript
   static_dir: javascript    

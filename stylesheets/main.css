@@ -10,3 +10,8 @@
 h2.notification-message {text-align: center;}
 
 div.desktop-only {display: none}
+
+#copyright {font-size:small;}
+
+#privacylink {font-size:xx-small;padding-right:5px;margin:0px;}
+#privacylink a {text-decoration:none;color:white;}
