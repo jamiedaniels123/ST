@@ -18,7 +18,7 @@
       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
     })();
     </script>
-    <title>Make sports tables with SportsTables! the league table generator</title>
+    <title>{{ language_strings.site_title }}</title>
   </head>
   <body>
   <div data-role="page" id="index">
@@ -51,7 +51,7 @@
     </div>
     </div>
 	<ul data-role="listview" data-inset="true" data-theme="a">
-	  <li><a href="./newtable"><img src="images/create_new_table_new.png">Create a new table</a></li>
+	  <li><a href="./newtable"><img src="images/create_new_table_new.png">{{ language_strings.create_new_table}}</a></li>
 	</ul>
 	<ul data-role="listview" data-inset="true" data-theme="a">
 	  <li><a href="./existingtable"><img src="images/your-tables_new.png">Your tables<span class="ui-li-count">{{ tablecount }}</span></a></li>
